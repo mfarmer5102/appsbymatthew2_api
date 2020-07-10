@@ -12,7 +12,7 @@ myclient = pymongo.MongoClient(os.getenv('DB_URL', "mongodb://localhost:27017"))
 database = myclient[(os.getenv('DB_NAME', "local-database-name"))]
 
 # Define collections
-skillsCollection = database["skills"]
+skillsCollection = database["keywords"]
 
 # Define blueprint
 Skills = Blueprint('Skills', __name__)
@@ -58,3 +58,46 @@ def sendKeywords():
             code=200,
             msg="Success"
         )
+
+@Skills.route("/api/skills/filter", methods=['GET'])
+def sendFilteredKeywords():
+
+    # Prepare the find object
+    #########################
+
+    findObj = {}
+
+    # Demonstrable
+    isDemonstrable = request.args.get("demonstrable")
+    if isDemonstrable is not None:
+        findObj["showOnPortfolio"] = request.args.get("demonstrable") == "true"
+
+    # Proficient
+    isProficient = request.args.get("proficient")
+    if isProficient is not None:
+        findObj["showInGallery"] = request.args.get("proficient") == "true"
+
+    # Prepare the sort object
+    #########################
+
+    sortArr = []
+    
+    # Name
+    sortName = request.args.get("sortName")
+    if sortName is not None:
+        sortArr.append(("name", pymongo.ASCENDING if request.args.get("sortName") == "asc" else pymongo.DESCENDING))
+
+    # Type
+    sortType = request.args.get("sortType")
+    if sortType is not None:
+        sortObj.append(("type", pymongo.ASCENDING if request.args.get("sortName") == "asc" else pymongo.DESCENDING))
+    
+    # Default
+    if not sortArr: # Mongo query won't work if the sort array is empty, so give it something to sort on
+        sortArr.append(("name", pymongo.ASCENDING))
+
+    # Make the DB Query
+    #########################
+
+    dataset = skillsCollection.find(findObj).sort(sortArr)
+    return jsonResponse(dataset)
