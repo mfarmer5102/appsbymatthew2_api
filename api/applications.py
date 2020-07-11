@@ -62,7 +62,7 @@ def sendApplications():
 @Applications.route("/api/applications/filter", methods=['GET'])
 def sendFilteredApplications():
 
-    # Prepare the find object
+    # Prepare the filter (find) object
     #########################
 
     findObj = {}
@@ -72,13 +72,29 @@ def sendFilteredApplications():
     if isFeatured is not None:
         findObj["isFeatured"] = request.args.get("featured") == "true"
 
+    # Support Status
+    supportStatus = request.args.get("supportStatus")
+    if supportStatus is not None:
+        parsedStatuses = supportStatus.split(',')
+        findObj["supportStatus"] = {"$in": parsedStatuses}
+
+    # Title
+    suppliedTitle = request.args.get("title")
+    if suppliedTitle is not None:
+        findObj["title"] = {"$regex": suppliedTitle}
+
     # Utilized Skills
     keywords = request.args.get("keywords")
     if keywords is not None:
-        suppliedKeywords = request.args.get("keywords")
-        parsedKeywords = suppliedKeywords.split(',')
-        findObj["keywords"] = {"$all": parsedKeywords}
+        parsedKeywords = keywords.split(',')
+        findObj["keywords"] = {"$in": parsedKeywords}
     
+    # Deployment Status
+    isDeployed = request.args.get("deployed")
+    if isDeployed is not None:
+        findObj["deployedLink"] = {"$ne": None}
+
+
     # Prepare the sort object
     #########################
 
