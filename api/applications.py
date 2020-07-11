@@ -79,7 +79,6 @@ def sendFilteredApplications():
         parsedKeywords = suppliedKeywords.split(',')
         findObj["keywords"] = {"$all": parsedKeywords}
     
-    print(findObj)
     # Prepare the sort object
     #########################
 
@@ -92,10 +91,26 @@ def sendFilteredApplications():
 
     # Default
     if not sortArr: # Mongo query won't work if the sort array is empty, so give it something to sort on
+        sortArr.append(("isFeatured", pymongo.DESCENDING))
         sortArr.append(("publishDate", pymongo.DESCENDING))
+
+    # Prepare the limit and skip values
+    #########################
+    
+    # Skip
+    providedSkip = request.args.get("skip")
+    skipValue = 0
+    if providedSkip is not None:
+        skipValue = int(providedSkip)
+
+    #Limit
+    providedLimit = request.args.get("limit")
+    limitValue = 0
+    if providedLimit is not None:
+        limitValue = int(providedLimit)
 
     # Make the DB Query
     #########################
 
-    dataset = applicationsCollection.find(findObj).sort(sortArr)
+    dataset = applicationsCollection.find(findObj).sort(sortArr).skip(skipValue).limit(limitValue)
     return jsonResponse(dataset)
