@@ -45,8 +45,10 @@ def sendApplications():
         )
 
     if request.method == 'PUT':
-        myquery = {'_id': ObjectId(request.json['_id'])}
-        applicationsCollection.replace_one(myQuery, request.json, upsert=True)
+        myQuery = {'_id': ObjectId(request.json['_id'])}
+        myRequestWithoutId = request.json
+        del myRequestWithoutId['_id']
+        applicationsCollection.replace_one(myQuery, myRequestWithoutId, upsert=True)
         return jsonify(
             code=200,
             msg="Success"
@@ -66,6 +68,11 @@ def sendFilteredApplications():
     #########################
 
     findObj = {}
+
+    # Document ID
+    suppliedId = request.args.get("id")
+    if suppliedId is not None:
+        findObj["_id"] = ObjectId(suppliedId)
 
     # Featured
     isFeatured = request.args.get("featured")
