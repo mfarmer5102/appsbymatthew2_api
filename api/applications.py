@@ -12,7 +12,7 @@ myclient = pymongo.MongoClient(os.getenv('DB_URL', "mongodb://localhost:27017"))
 database = myclient[(os.getenv('DB_NAME', "local-database-name"))]
 
 # Define collections
-applicationsCollection = database["applications"]
+applicationsCollection = database["apps"]
 
 # Define blueprint
 Applications = Blueprint('Applications', __name__)
@@ -45,8 +45,10 @@ def sendApplications():
         )
 
     if request.method == 'PUT':
-        myquery = {'_id': ObjectId(request.json['_id'])}
-        applicationsCollection.replace_one(myQuery, request.json, upsert=True)
+        myQuery = {'_id': ObjectId(request.json['_id'])}
+        myRequestWithoutId = request.json
+        del myRequestWithoutId['_id']
+        applicationsCollection.replace_one(myQuery, myRequestWithoutId, upsert=True)
         return jsonify(
             code=200,
             msg="Success"
@@ -58,3 +60,80 @@ def sendApplications():
             code=200,
             msg="Success"
         )
+
+@Applications.route("/api/applications/filter", methods=['GET'])
+def sendFilteredApplications():
+
+    # Prepare the filter (find) object
+    #########################
+
+    findObj = {}
+
+    # Document ID
+    suppliedId = request.args.get("id")
+    if suppliedId is not None:
+        findObj["_id"] = ObjectId(suppliedId)
+
+    # Featured
+    isFeatured = request.args.get("featured")
+    if isFeatured is not None:
+        findObj["isFeatured"] = request.args.get("featured") == "true"
+
+    # Support Status
+    supportStatus = request.args.get("supportStatus")
+    if supportStatus is not None:
+        parsedStatuses = supportStatus.split(',')
+        findObj["supportStatus"] = {"$in": parsedStatuses}
+
+    # Title
+    suppliedTitle = request.args.get("title")
+    if suppliedTitle is not None:
+        findObj["title"] = {"$regex": suppliedTitle}
+
+    # Utilized Skills
+    keywords = request.args.get("keywords")
+    if keywords is not None:
+        parsedKeywords = keywords.split(',')
+        findObj["keywords"] = {"$in": parsedKeywords}
+    
+    # Deployment Status
+    isDeployed = request.args.get("deployed")
+    if isDeployed is not None:
+        findObj["deployedLink"] = {"$ne": None}
+
+
+    # Prepare the sort object
+    #########################
+
+    sortArr = []
+    
+    # Date
+    sortDate = request.args.get("sortDate")
+    if sortDate is not None:
+        sortArr.append(("publishDate", pymongo.DESCENDING if request.args.get("sortDate") == "desc" else pymongo.ASCENDING))
+
+    # Default
+    if not sortArr: # Mongo query won't work if the sort array is empty, so give it something to sort on
+        sortArr.append(("isFeatured", pymongo.DESCENDING))
+        sortArr.append(("publishDate", pymongo.DESCENDING))
+
+    # Prepare the limit and skip values
+    #########################
+    
+    # Skip
+    providedSkip = request.args.get("skip")
+    skipValue = 0
+    if providedSkip is not None:
+        skipValue = int(providedSkip)
+
+    #Limit
+    providedLimit = request.args.get("limit")
+    limitValue = 0
+    if providedLimit is not None:
+        limitValue = int(providedLimit)
+
+    # Make the DB Query
+    #########################
+
+    dataset = applicationsCollection.find(findObj).sort(sortArr).skip(skipValue).limit(limitValue)
+    return jsonResponse(dataset)
