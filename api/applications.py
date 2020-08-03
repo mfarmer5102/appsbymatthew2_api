@@ -30,6 +30,11 @@ def jsonResponse(dataset):
 
 # Begin routes
 
+@Applications.route("/api/applications/countall", methods=['GET'])
+def sendTotalAppCount():
+    dataset = applicationsCollection.find().count()
+    return json_util.dumps(dataset)
+
 @Applications.route("/api/applications", methods=['GET', 'POST', 'PUT', 'DELETE'])
 def sendApplications():
 
