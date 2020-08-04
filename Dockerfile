@@ -1,6 +1,6 @@
 # NOTE: If installing Docker on Linux, use Snap
 
-FROM ubuntu:18.04
+FROM ubuntu:latest
 RUN apt-get update -y
 
 RUN apt-get install -y \
