@@ -8,6 +8,11 @@ pipelines:
         script: # Modify the commands below to build your repository.
           - pip install -r requirements.txt
     - step:
+        name: Prepare ENV Variables
+        script:
+          - echo "$DB_URL" >> .env
+          - echo "$DB_NAME" >> .env
+    - step:
         name: Google App Engine
         deployment: Production
         script:
