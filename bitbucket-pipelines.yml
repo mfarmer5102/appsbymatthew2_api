@@ -26,10 +26,12 @@ pipelines:
         - printf 'runtime:' >> app.yaml
         - printf ' python38' >> app.yaml
         - printf '\n' >> app.yaml
-        - printf 'DB_URL:' >> app.yaml
+        - printf 'env_variables:' >> app.yaml
+        - printf '\n' >> app.yaml
+        - printf '  DB_URL:' >> app.yaml
         - printf ' $DB_URL' >> app.yaml
         - printf '\n' >> app.yaml
-        - printf 'DB_NAME:' >> app.yaml
+        - printf '  DB_NAME:' >> app.yaml
         - printf ' $DB_NAME' >> app.yaml
         - cat app.yaml
         - pipe: atlassian/google-app-engine-deploy:0.7.4
