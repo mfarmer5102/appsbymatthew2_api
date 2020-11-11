@@ -12,6 +12,11 @@ COPY . /app
 WORKDIR /app
 
 RUN pip3 install -r requirements.txt
+RUN pip3 install flask
+RUN pip3 install pymongo
+RUN pip3 python-dotenv
+RUN pip3 install dnspython
+RUN pip3 install flask_cors
 
 ENTRYPOINT ["python"]
 
