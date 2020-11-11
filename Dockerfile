@@ -1,23 +1,38 @@
 # NOTE: If installing Docker on Linux, use Snap
 
-FROM ubuntu:latest
-RUN apt-get update -y
+####################################################################
+## UBUNTU 
+####################################################################
 
-RUN apt-get install -y \
-    python3-pip \
-    python-dev \
-    build-essential
+#FROM ubuntu:latest
+#RUN apt-get update -y
+
+#RUN apt-get install -y \
+#    python3-pip \
+#    python-dev \
+#    build-essential
+
+#COPY . /app
+#WORKDIR /app
+
+#RUN pip3 install -r requirements.txt
+
+#ENTRYPOINT ["python"]
+#CMD ["main.py"]
+
+####################################################################
+## ALPINE
+####################################################################
+
+FROM alpine:latest
+RUN apk add python3
+RUN apk add py3-pip
 
 COPY . /app
 WORKDIR /app
 
 RUN pip3 install -r requirements.txt
-RUN pip3 install flask
-RUN pip3 install pymongo
-RUN pip3 install python-dotenv
-RUN pip3 install dnspython
-RUN pip3 install flask_cors
 
-ENTRYPOINT ["python"]
+EXPOSE 5000
 
-CMD ["main.py"]
+CMD ["python3", "main.py"]
