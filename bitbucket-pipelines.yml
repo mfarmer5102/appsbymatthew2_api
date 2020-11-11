@@ -23,8 +23,8 @@ pipelines:
         #- echo DB_NAME=$DB_NAME >> .env
         #- cat .env
         - echo 'env_variables:' >> app.yaml
-        - echo '  DB_URL: $DB_URL' >> app.yaml
-        - echo '  DB_URL: $DB_NAME' >> app.yaml
+        - echo '  DB_URL:$DB_URL' >> app.yaml
+        - echo '  DB_URL:$DB_NAME' >> app.yaml
         - pipe: atlassian/google-app-engine-deploy:0.7.4
           variables:
             KEY_FILE: $KEY_FILE
