@@ -1,5 +1,5 @@
 runtime: python37 # or python38 for Python 3.8
-entrypoint: python server.py
+#entrypoint: python server.py
 
 instance_class: F2
 
@@ -14,6 +14,6 @@ handlers:
 #   static_dir: static/images
 
 - url: /.*
-  secure: always
-  redirect_http_response_code: 301
-  script: auto
+  # secure: always
+  # redirect_http_response_code: 301
+  script: server.py #auto
