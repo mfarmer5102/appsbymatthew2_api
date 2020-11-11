@@ -10,9 +10,10 @@ pipelines:
     - step:
         name: Prepare ENV Variables
         script:
-          - $ touch .env
-          - $ echo $DB_URL >> .env
-          - $ echo $DB_NAME >> .env
+          - touch .env
+          - echo $DB_URL >> .env
+          - echo $DB_NAME >> .env
+          - cat .env
     - step:
         name: Google App Engine
         deployment: Production
