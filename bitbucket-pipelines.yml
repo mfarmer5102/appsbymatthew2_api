@@ -22,6 +22,7 @@ pipelines:
         #- echo DB_URL=$DB_URL > .env
         #- echo DB_NAME=$DB_NAME >> .env
         #- cat .env
+        - echo 'runtime:python38'
         - echo 'env_variables:' >> app.yaml
         - echo '  DB_URL:$DB_URL' >> app.yaml
         - echo '  DB_URL:$DB_NAME' >> app.yaml
