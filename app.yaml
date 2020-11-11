@@ -5,10 +5,10 @@ runtime: python38
 
 #instance_class: F2
 
-# env_variables:
-#  PORT: $PORT
-#  DB_NAME: $DB_NAME
-#  DB_URL: $DB_URL
+env_variables:
+ PORT: ${PORT}
+ DB_NAME: ${DB_NAME}
+ DB_URL: ${DB_URL}
 
 #handlers:
 # Matches requests to /images/... to files in static/images/...
