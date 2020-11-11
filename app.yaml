@@ -1,19 +1,21 @@
-runtime: python37 # or python38 for Python 3.8
+#runtime: python37 # or python38 for Python 3.8
 #entrypoint: python server.py
 
-instance_class: F2
+runtime: python38
+
+#instance_class: F2
 
 env_variables:
-  PORT: $PORT
-  DB_NAME: $DB_NAME
-  DB_URL: $DB_URL
+ #PORT: $PORT
+ DB_NAME: $DB_NAME
+ DB_URL: $DB_URL
 
-handlers:
+#handlers:
 # Matches requests to /images/... to files in static/images/...
 # - url: /images
 #   static_dir: static/images
 
-- url: /.*
+#- url: /.*
   # secure: always
   # redirect_http_response_code: 301
-  script: auto
+#  script: auto

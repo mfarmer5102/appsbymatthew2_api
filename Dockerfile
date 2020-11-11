@@ -14,4 +14,4 @@ WORKDIR /app
 RUN pip3 install -r requirements.txt
 ENTRYPOINT ["python"]
 
-CMD ["server.py"]
+CMD ["main.py"]
