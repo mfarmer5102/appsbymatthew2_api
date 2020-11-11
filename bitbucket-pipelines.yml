@@ -11,13 +11,17 @@ pipelines:
         name: Prepare ENV Variables
         script:
           - touch .env
-          - echo $DB_URL >> .env
-          - echo $DB_NAME >> .env
+          - echo DB_URL=$DB_URL > .env
+          - echo DB_NAME=$DB_NAME >> .env
           - cat .env
     - step:
         name: Google App Engine
-        deployment: Production
+        deployment: Production          
         script:
+        - touch .env
+        - echo DB_URL=$DB_URL > .env
+        - echo DB_NAME=$DB_NAME >> .env
+        - cat .env
         - pipe: atlassian/google-app-engine-deploy:0.7.4
           variables:
             KEY_FILE: $KEY_FILE
