@@ -14,3 +14,9 @@ pipelines:
           variables:
             KEY_FILE: $KEY_FILE
             PROJECT: $PROJECT
+    - step:
+        name: Deploy to App Engine
+        deployment: Test
+        script:
+            - echo $DB_URL
+            - echo $DB_NAME
