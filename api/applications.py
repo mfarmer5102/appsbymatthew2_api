@@ -8,8 +8,8 @@ from bson import json_util, ObjectId
 import json
 
 # Define database
-myclient = pymongo.MongoClient("mongodb+srv://mfarmer5102:phoebe17@cluster0.ya0ol.mongodb.net/AppGalleryLite?retryWrites=true&w=majority")
-database = myclient["AppGalleryLite"]
+myclient = pymongo.MongoClient(os.getenv('DB_URL', "mongodb://localhost:27017"))
+database = myclient[(os.getenv('DB_NAME', "local-database-name"))]
 
 # Define collections
 applicationsCollection = database["apps"]
