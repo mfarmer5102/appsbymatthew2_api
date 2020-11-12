@@ -32,7 +32,7 @@ pipelines:
           - docker push $IMAGE_NAME
 
           # deploy to cloud run
-          - gcloud beta run deploy $SERVICE_NAME --image $IMAGE_NAME --region us-central1 --project=appsbymatthew-api
+          - gcloud beta run deploy $SERVICE_NAME --image $IMAGE_NAME --region us-central1 --project=appsbymatthew-api --platform=managed
 
 options:
   docker: true
