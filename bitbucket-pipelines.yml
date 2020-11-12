@@ -20,7 +20,8 @@ pipelines:
           - docker build -t $IMAGE_NAME .
 
           # Gcloud auth and check
-          - gcloud auth activate-service-account $SERVICE_ACCOUNT_LINK --key-file=$KEY_FILE
+          - echo $KEY_FILE | base64 --decode > keyFile.json
+          - gcloud auth activate-service-account $SERVICE_ACCOUNT_LINK --key-file=/keyFile.json
           - gcloud config list
 
           # config image registry with gcloud helper
