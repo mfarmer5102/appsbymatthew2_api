@@ -1,13 +1,13 @@
 options:
   docker: true
 
-  pipelines:
-    default:
-      - step:
-          name: Deploy to Google Cloud Run
-          deployment: Production        
-          script:
-          - pipe: atlassian/google-app-engine-deploy:0.7.4
-            variables:
-              KEY_FILE: $KEY_FILE
-              PROJECT: $PROJECT
+pipelines:
+  default:
+    - step:
+        name: Deploy to Google Cloud Run
+        deployment: Production        
+        script:
+        - pipe: atlassian/google-cloud-storage-deploy:0.4.5
+          variables:
+            KEY_FILE: $KEY_FILE
+            PROJECT: $PROJECT
