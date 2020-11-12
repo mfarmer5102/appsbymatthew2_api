@@ -28,7 +28,7 @@ pipelines:
           # config image registry with gcloud helper
           - gcloud auth configure-docker -q
 
-          # push image to gcr
+          # push image to gcr#
           - docker push $IMAGE_NAME
 
           # deploy to cloud run
