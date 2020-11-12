@@ -21,7 +21,8 @@ pipelines:
 
           # Gcloud auth and check
           - echo $KEY_FILE | base64 --decode > keyFile.json
-          - gcloud auth activate-service-account $SERVICE_ACCOUNT_LINK --key-file=/keyFile.json --project=appsbymatthew-api
+          - cat keyFile.json
+          - gcloud auth activate-service-account $SERVICE_ACCOUNT_LINK --key-file=keyFile.json --project=appsbymatthew-api
           - gcloud config list
 
           # config image registry with gcloud helper
