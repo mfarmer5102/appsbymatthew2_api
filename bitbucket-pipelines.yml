@@ -2,35 +2,35 @@ image: google/cloud-sdk:latest
 pipelines:
   default:
     - step:
-      name: Build - Push - Deploy to GCP (gcr.io/YourGoogleProject/YourCloudRunServiceName) for Production
-      image: google/cloud-sdk:latest
-      caches:
-        - docker
-      deployment: production
-      script:
-        # set CLOUDSDK_CONFIG environment variables
-        # - export CLOUDSDK_CONFIG=`pwd`/credentials/service-account.json
-        # - gcloud config list
+        name: Build - Push - Deploy to GCP (gcr.io/YourGoogleProject/YourCloudRunServiceName) for Production
+        image: google/cloud-sdk:latest
+        caches:
+          - docker
+        deployment: production
+        script:
+          # set CLOUDSDK_CONFIG environment variables
+          # - export CLOUDSDK_CONFIG=`pwd`/credentials/service-account.json
+          # - gcloud config list
 
-        # set image name
-        - export IMAGE_NAME=gcr.io/appsbymatthew-api/appsbymatthew-api:latest # ex. gcr.io/my-g-project/my-cr-service 
-        - export SERVICE_NAME=appsbymatthew-api
+          # set image name
+          - export IMAGE_NAME=gcr.io/appsbymatthew-api/appsbymatthew-api:latest # ex. gcr.io/my-g-project/my-cr-service 
+          - export SERVICE_NAME=appsbymatthew-api
 
-        # Build image
-        - docker build -t $IMAGE_NAME .
+          # Build image
+          - docker build -t $IMAGE_NAME .
 
-        # Gcloud auth and check
-        - gcloud auth activate-service-account bitbucket-pipeline@bar.iam.gserviceaccount.com --key-file=credentials/service-account.json
-        - gcloud config list
+          # Gcloud auth and check
+          - gcloud auth activate-service-account bitbucket-pipeline@bar.iam.gserviceaccount.com --key-file=credentials/service-account.json
+          - gcloud config list
 
-        # config image registry with gcloud helper
-        - gcloud auth configure-docker -q
+          # config image registry with gcloud helper
+          - gcloud auth configure-docker -q
 
-        # push image to gcr
-        - docker push $IMAGE_NAME
+          # push image to gcr
+          - docker push $IMAGE_NAME
 
-        # deploy to cloud run
-        - gcloud beta run deploy $SERVICE_NAME --image $IMAGE_NAME --region us-central1 --project [YourGoogleProjectId]
+          # deploy to cloud run
+          - gcloud beta run deploy $SERVICE_NAME --image $IMAGE_NAME --region us-central1 --project [YourGoogleProjectId]
 
 options:
   docker: true
