@@ -20,7 +20,7 @@ pipelines:
           - docker build -t $IMAGE_NAME .
 
           # Gcloud auth and check
-          - gcloud auth activate-service-account bitbucket-pipeline@bar.iam.gserviceaccount.com --key-file=credentials/service-account.json
+          - gcloud auth activate-service-account $SERVICE_ACCOUNT_LINK --key-file=$KEY_FILE
           - gcloud config list
 
           # config image registry with gcloud helper
@@ -30,7 +30,7 @@ pipelines:
           - docker push $IMAGE_NAME
 
           # deploy to cloud run
-          - gcloud beta run deploy $SERVICE_NAME --image $IMAGE_NAME --region us-central1 --project [YourGoogleProjectId]
+          - gcloud beta run deploy $SERVICE_NAME --image $IMAGE_NAME --region us-central1 --project appsbymatthew-api
 
 options:
   docker: true
