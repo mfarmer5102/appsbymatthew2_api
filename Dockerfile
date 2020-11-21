@@ -1,17 +1,40 @@
 # NOTE: If installing Docker on Linux, use Snap
 
-FROM ubuntu:latest
-RUN apt-get update -y
+####################################################################
+## UBUNTU 
+####################################################################
 
-RUN apt-get install -y \
-    python3-pip \
-    python-dev \
-    build-essential
+#FROM ubuntu:latest
+#RUN apt-get update -y
+
+#RUN apt-get install -y \
+#    python3-pip \
+#    python-dev \
+#    build-essential
+
+#COPY . /app
+#WORKDIR /app
+
+#RUN pip3 install -r requirements.txt
+
+#ENTRYPOINT ["python"]
+#CMD ["main.py"]
+
+####################################################################
+## ALPINE
+####################################################################
+
+FROM alpine:latest
+RUN apk add python3
+RUN apk add py3-pip
 
 COPY . /app
 WORKDIR /app
 
 RUN pip3 install -r requirements.txt
-ENTRYPOINT ["python"]
 
-CMD ["server.py"]
+EXPOSE 5000
+
+CMD ["python3", "main.py"]
+
+ENV DB_NAME=AppGalleryLite
