@@ -1,12 +1,9 @@
-cron:
-# - description: "daily summary job"
-#   url: /tasks/summary
+# cron:
+# - description: "Cron job one"
+#   url: /api/ping_logger
 #   schedule: every 24 hours
-- description: "Keep alive traffic analyzer"
-  url: '/api/all/'
-  schedule: every 15 minutes from 08:00 to 20:00
-  timezone: America/New_York
-# - description: "new daily summary job"
-  # url: /tasks/summary
-  # schedule: every 24 hours
-  # target: beta
+#   timezone: America/New_York
+# - description: "Cron job two"
+#   url: '/api/ping_logger'
+#   schedule: every 15 minutes from 08:00 to 20:00
+#   timezone: America/New_York
