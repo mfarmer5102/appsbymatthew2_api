@@ -9,10 +9,10 @@ import json
 
 # Define database
 myclient = pymongo.MongoClient(os.getenv('DB_URL', "mongodb://localhost:27017"))
-database = myclient[(os.getenv('DB_NAME', "local-database-name"))]
+database = myclient[(os.getenv('DB_NAME', "appsbymatthew_dev"))]
 
 # Define collections
-skillsCollection = database["keywords"]
+skillsCollection = database["skills"]
 
 # Define blueprint
 Skills = Blueprint('Skills', __name__)
@@ -38,15 +38,23 @@ def sendKeywords():
         return jsonResponse(dataset)
     
     if request.method == 'POST':
-        skillsCollection.insert_one(request.json)
+        myRequest = request.json
+        myRequest['is_proficient'] = True if request.json['is_proficient'] == 'true' else False
+        skillsCollection.insert_one(myRequest)
+        print(myRequest)
         return jsonify(
             code=200,
             msg="Success"
         )
 
     if request.method == 'PUT':
-        myQuery = {'_id': ObjectId(request.json['_id'])}
+        incomingId = request.json['_id']
+        print(incomingId['$oid'])
+        myQuery = {'_id': ObjectId(incomingId['$oid'])}
+        print(myQuery)
         myRequestWithoutId = request.json
+        myRequestWithoutId['is_proficient'] = True if request.json['is_proficient'] == 'true' else False
+        print(myRequestWithoutId)
         del myRequestWithoutId['_id']
         skillsCollection.replace_one(myQuery, myRequestWithoutId, upsert=True)
         return jsonify(
@@ -61,7 +69,7 @@ def sendKeywords():
             msg="Success"
         )
 
-@Skills.route("/api/skills/filter", methods=['GET'])
+@Skills.route("/api/skills/one", methods=['GET'])
 def sendFilteredKeywords():
 
     # Prepare the find object
@@ -73,6 +81,11 @@ def sendFilteredKeywords():
     suppliedId = request.args.get("id")
     if suppliedId is not None:
         findObj["_id"] = ObjectId(suppliedId)
+
+    # Skill Code
+    suppliedCode = request.args.get("skillCode")
+    if suppliedCode is not None:
+        findObj["code"] = suppliedCode
 
     # Demonstrable
     isDemonstrable = request.args.get("demonstrable")
