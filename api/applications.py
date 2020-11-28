@@ -1,5 +1,5 @@
 # General imports
-from flask import Flask, Blueprint, request, jsonify
+from flask import Flask, Blueprint, request, jsonify, Response
 import os
 
 # MongoDB specific imports
@@ -8,26 +8,14 @@ from bson import json_util, ObjectId
 import json
 import datetime
 
-# Define database
-myclient = pymongo.MongoClient(os.getenv('DB_URL', "mongodb://localhost:27017"))
-database = myclient[(os.getenv('DB_NAME', "appsbymatthew_dev"))]
+# File Imports
+from common import *
 
 # Define collections
 applicationsCollection = database["applications"]
 
 # Define blueprint
 Applications = Blueprint('Applications', __name__)
-
-# Define reusable functions
-
-def bsonToJson(item):
-    return json.loads(json_util.dumps(item))
-
-def jsonResponse(dataset):
-    arr = []
-    for item in dataset:
-        arr.append(bsonToJson(item))
-    return json.dumps(arr)
 
 # Begin routes
 
@@ -36,13 +24,12 @@ def sendTotalAppCount():
     dataset = applicationsCollection.find().count()
     return json_util.dumps(dataset)
 
-@Applications.route("/api/applications", methods=['GET', 'POST', 'PUT', 'DELETE'])
-def sendApplications():
+@Applications.route("/api/applications", methods=['GET'])
+def processApplicationsRead():
 
     if request.method == 'GET':
-        # Prepare the filter (find) object
-        #########################
 
+        # Initialize the find object
         findObj = {}
 
         # Application Document ID
@@ -77,9 +64,7 @@ def sendApplications():
             findObj["deployed_link"] = {"$ne": None}
 
 
-        # Prepare the sort object
-        #########################
-
+        # Initialize the sort array
         sortArr = []
         
         # Date
@@ -91,9 +76,6 @@ def sendApplications():
         if not sortArr: # Mongo query won't work if the sort array is empty, so give it something to sort on
             sortArr.append(("is_featured", pymongo.DESCENDING))
             sortArr.append(("publish_date", pymongo.DESCENDING))
-
-        # Prepare the limit and skip values
-        #########################
         
         # Skip
         providedSkip = request.args.get("skip")
@@ -108,43 +90,44 @@ def sendApplications():
             limitValue = int(providedLimit)
 
         # Make the DB Query
-        #########################
-
-        print(findObj)
         dataset = applicationsCollection.find(findObj).sort(sortArr).skip(skipValue).limit(limitValue)
         x = jsonResponse(dataset)
         return x
 
+@Applications.route("/api/applications", methods=['POST', 'PUT', 'DELETE'])
+def processApplicationsWrite():
+
+    if not isAuthenticatedUser(request): 
+        return handleUnauthenticatedRequest()
+
     if request.method == 'POST':
-        print(request.json)
+
         x = request.json
-        x['publish_date'] = datetime.datetime.strptime(request.json['publish_date'], '%Y-%m-%d')
-        x['is_featured'] = True if request.json['is_featured'] == 'true' else False
-        applicationsCollection.insert_one(x)
-        return jsonify(
-            code=200,
-            msg="Success"
-        )
+
+        try:
+            x['publish_date'] = datetime.datetime.strptime(request.json['publish_date'], '%Y-%m-%d')
+            x['is_featured'] = True if request.json['is_featured'] == 'true' else False
+            applicationsCollection.insert_one(x)
+            return handleSuccessfulWriteRequest()
+        
+        except Exception as e:
+            return Response(status = 415)
 
     if request.method == 'PUT':
-        incomingId = request.json['_id']
-        print(incomingId['$oid'])
-        myQuery = {'_id': ObjectId(incomingId['$oid'])}
-        print(myQuery)
-        myRequestWithoutId = request.json
-        myRequestWithoutId['publish_date'] = datetime.datetime.strptime(request.json['publish_date'], '%Y-%m-%d')
-        print(myRequestWithoutId)
-        # myRequestWithoutId['is_proficient'] = True if request.json['is_proficient'] == 'true' else False
-        del myRequestWithoutId['_id']
-        applicationsCollection.replace_one(myQuery, myRequestWithoutId, upsert=True)
-        return jsonify(
-            code=200,
-            msg="Success"
-        )
+
+        try:
+            incomingId = request.json['_id']
+            myQuery = {'_id': ObjectId(incomingId['$oid'])}
+            myRequestWithoutId = request.json
+            myRequestWithoutId['publish_date'] = datetime.datetime.strptime(request.json['publish_date'], '%Y-%m-%d')
+            del myRequestWithoutId['_id']
+            applicationsCollection.replace_one(myQuery, myRequestWithoutId, upsert=True)
+            return handleSuccessfulWriteRequest()
+
+        except Exception as e:
+            return Response(status = 415)
 
     if request.method == 'DELETE':
+
         applicationsCollection.delete_one({'_id': ObjectId(request.json['_id'])})
-        return jsonify(
-            code=200,
-            msg="Success"
-        )
+        return handleSuccessfulWriteRequest()

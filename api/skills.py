@@ -7,9 +7,8 @@ import pymongo
 from bson import json_util, ObjectId
 import json
 
-# Define database
-myclient = pymongo.MongoClient(os.getenv('DB_URL', "mongodb://localhost:27017"))
-database = myclient[(os.getenv('DB_NAME', "appsbymatthew_dev"))]
+# File Imports
+from common import *
 
 # Define collections
 skillsCollection = database["skills"]
@@ -17,64 +16,55 @@ skillsCollection = database["skills"]
 # Define blueprint
 Skills = Blueprint('Skills', __name__)
 
-# Define reusable functions
-
-def bsonToJson(item):
-    return json.loads(json_util.dumps(item))
-
-def jsonResponse(dataset):
-    arr = []
-    for item in dataset:
-        arr.append(bsonToJson(item))
-    return json.dumps(arr)
-
 # Begin routes
 
-@Skills.route("/api/skills", methods=['GET', 'POST', 'PUT', 'DELETE'])
-def sendKeywords():
+@Skills.route("/api/skills", methods=['GET'])
+def processSkillsRead():
 
     if request.method == 'GET':
         dataset = skillsCollection.find().sort([("type", pymongo.ASCENDING), ("name", pymongo.ASCENDING)])
         return jsonResponse(dataset)
-    
+
+@Skills.route("/api/skills", methods=['POST', 'PUT', 'DELETE'])
+def processSkillsWrite():
+
+    if not isAuthenticatedUser(request): 
+        return handleUnauthenticatedRequest()
+
     if request.method == 'POST':
-        myRequest = request.json
-        myRequest['is_proficient'] = True if request.json['is_proficient'] == 'true' else False
-        skillsCollection.insert_one(myRequest)
-        print(myRequest)
-        return jsonify(
-            code=200,
-            msg="Success"
-        )
+
+        try:
+            myRequest = request.json
+            myRequest['is_proficient'] = True if request.json['is_proficient'] == 'true' else False
+            skillsCollection.insert_one(myRequest)
+            return handleSuccessfulWriteRequest()
+        
+        except Exception as e:
+            return Response(status = 415)
 
     if request.method == 'PUT':
-        incomingId = request.json['_id']
-        print(incomingId['$oid'])
-        myQuery = {'_id': ObjectId(incomingId['$oid'])}
-        print(myQuery)
-        myRequestWithoutId = request.json
-        myRequestWithoutId['is_proficient'] = True if request.json['is_proficient'] == 'true' else False
-        print(myRequestWithoutId)
-        del myRequestWithoutId['_id']
-        skillsCollection.replace_one(myQuery, myRequestWithoutId, upsert=True)
-        return jsonify(
-            code=200,
-            msg="Success"
-        )
+
+        try:
+            incomingId = request.json['_id']
+            myQuery = {'_id': ObjectId(incomingId['$oid'])}
+            myRequestWithoutId = request.json
+            myRequestWithoutId['is_proficient'] = True if request.json['is_proficient'] == 'true' else False
+            del myRequestWithoutId['_id']
+            skillsCollection.replace_one(myQuery, myRequestWithoutId, upsert=True)
+            return handleSuccessfulWriteRequest()
+
+        except Exception as e:
+            return Response(status = 415)
 
     if request.method == 'DELETE':
+
         skillsCollection.delete_one({'_id': ObjectId(request.json['_id'])})
-        return jsonify(
-            code=200,
-            msg="Success"
-        )
+        return handleSuccessfulWriteRequest()
 
 @Skills.route("/api/skills/one", methods=['GET'])
 def sendFilteredKeywords():
 
-    # Prepare the find object
-    #########################
-
+    # Initialize the find object
     findObj = {}
 
     # Document ID
@@ -97,9 +87,7 @@ def sendFilteredKeywords():
     if isProficient is not None:
         findObj["showInGallery"] = request.args.get("proficient") == "true"
 
-    # Prepare the sort object
-    #########################
-
+    # Initialize the sort array
     sortArr = []
     
     # Name
@@ -117,7 +105,5 @@ def sendFilteredKeywords():
         sortArr.append(("name", pymongo.ASCENDING))
 
     # Make the DB Query
-    #########################
-
     dataset = skillsCollection.find(findObj).sort(sortArr)
     return jsonResponse(dataset)

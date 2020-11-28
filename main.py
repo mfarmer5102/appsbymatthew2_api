@@ -18,11 +18,13 @@ port = int(os.environ.get("PORT", 5000))
 from api.applications import Applications
 from api.cron import Cron
 from api.skills import Skills
+from api.skillTypes import SkillTypes
 
 # Register route files
 app.register_blueprint(Applications)
 app.register_blueprint(Cron)
 app.register_blueprint(Skills)
+app.register_blueprint(SkillTypes)
 
 # Root URL Route
 @app.route('/')
