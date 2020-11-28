@@ -1,0 +1,22 @@
+{
+    $jsonSchema: {
+      additionalProperties: false,
+      properties: {
+        _id: {
+          bsonType: 'objectId'
+        },
+        label: {
+          type: 'string',
+          uniqueItems: true
+        },
+        code: {
+          type: 'string',
+          uniqueItems: true
+        }
+      },
+      required: [
+        'label',
+        'code'
+      ]
+    }
+  }
