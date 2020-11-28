@@ -35,7 +35,9 @@ def processSkillsWrite():
 
         try:
             myRequest = request.json
-            myRequest['is_proficient'] = True if request.json['is_proficient'] == 'true' else False
+            myRequest['is_proficient'] = True if request.json['is_proficient'] == 'true' else False # Parse boolean
+            myRequest['is_visible_in_app_details'] = True if request.json['is_visible_in_app_details'] == 'true' else False # Parse boolean
+
             skillsCollection.insert_one(myRequest)
             return handleSuccessfulWriteRequest()
         
