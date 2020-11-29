@@ -1,0 +1,38 @@
+{
+    $jsonSchema: {
+      additionalProperties: false,
+      properties: {
+        _id: {
+          bsonType: 'objectId'
+        },
+        name: {
+          type: 'string',
+          minLength: 1,
+          uniqueItems: true,
+          description: 'Skill names must be unique.'
+        },
+        is_proficient: {
+          type: 'boolean'
+        },
+        is_visible_in_app_details: {
+          type: 'boolean'
+        },
+        skill_type_code: {
+          type: 'string',
+          minLength: 1
+        },
+        code: {
+          type: 'string',
+          minLength: 1,
+          uniqueItems: true
+        }
+      },
+      required: [
+        'name',
+        'is_proficient',
+        'is_visible_in_app_details',
+        'skill_type_code',
+        'code'
+      ]
+    }
+  }

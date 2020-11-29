@@ -8,8 +8,8 @@ app = Flask(__name__)
 Cron = Blueprint('Cron', __name__)
 
 # Define Cron routes
-@Cron.route("/api/ping_logger", methods=['GET', 'POST', 'PUT', 'DELETE'])
-def sendKeywords():
+# @Cron.route("/api/ping_logger", methods=['GET', 'POST', 'PUT', 'DELETE'])
+# def sendKeywords():
 
-    if request.method == 'GET':
-        return requests.get('https://trafficanalyzer.azurewebsites.net/api/all').content
+#     if request.method == 'GET':
+#         return requests.get('https://trafficanalyzer.azurewebsites.net/api/all').content
