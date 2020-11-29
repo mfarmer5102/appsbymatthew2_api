@@ -1,78 +1,86 @@
 # General imports
 from flask import Flask, Blueprint, request, jsonify
-import os
 
 # MongoDB specific imports
 import pymongo
 from bson import json_util, ObjectId
 import json
 
-# Define database
-myclient = pymongo.MongoClient(os.getenv('DB_URL', "mongodb://localhost:27017"))
-database = myclient[(os.getenv('DB_NAME', "local-database-name"))]
+# File Imports
+from common import *
 
 # Define collections
-skillsCollection = database["keywords"]
+skillsCollection = database["skills"]
 
 # Define blueprint
 Skills = Blueprint('Skills', __name__)
 
-# Define reusable functions
-
-def bsonToJson(item):
-    return json.loads(json_util.dumps(item))
-
-def jsonResponse(dataset):
-    arr = []
-    for item in dataset:
-        arr.append(bsonToJson(item))
-    return json.dumps(arr)
-
 # Begin routes
 
-@Skills.route("/api/skills", methods=['GET', 'POST', 'PUT', 'DELETE'])
-def sendKeywords():
+@Skills.route("/api/skills", methods=['GET'])
+def processSkillsRead():
 
     if request.method == 'GET':
         dataset = skillsCollection.find().sort([("type", pymongo.ASCENDING), ("name", pymongo.ASCENDING)])
         return jsonResponse(dataset)
-    
+
+@Skills.route("/api/skills", methods=['POST', 'PUT', 'DELETE'])
+def processSkillsWrite():
+
+    # For write actions, authenticate the user
+    if not isAuthenticatedUser(request): 
+        return handleUnauthenticatedRequest()
+
     if request.method == 'POST':
-        skillsCollection.insert_one(request.json)
-        return jsonify(
-            code=200,
-            msg="Success"
-        )
+
+        try:
+            myRequest = request.json
+            myRequest['is_proficient'] = True if request.json['is_proficient'] == 'true' else False # Parse bool
+            myRequest['is_visible_in_app_details'] = True if request.json['is_visible_in_app_details'] == 'true' else False # Parse bool
+
+            skillsCollection.insert_one(myRequest)
+            return handleSuccessfulWriteRequest()
+        
+        # If data doesn't conform to validations, return error
+        except Exception as e:
+            return Response(status = 415)
 
     if request.method == 'PUT':
-        myQuery = {'_id': ObjectId(request.json['_id'])}
-        myRequestWithoutId = request.json
-        del myRequestWithoutId['_id']
-        skillsCollection.replace_one(myQuery, myRequestWithoutId, upsert=True)
-        return jsonify(
-            code=200,
-            msg="Success"
-        )
+
+        try:
+            incomingId = request.json['_id']
+            myQuery = {'_id': ObjectId(incomingId['$oid'])}
+            myRequestWithoutId = request.json
+            myRequestWithoutId['is_proficient'] = True if request.json['is_proficient'] == 'true' else False #Parse bool
+            myRequest['is_visible_in_app_details'] = True if request.json['is_visible_in_app_details'] == 'true' else False # Parse bool
+            del myRequestWithoutId['_id']
+            skillsCollection.replace_one(myQuery, myRequestWithoutId, upsert=True)
+            return handleSuccessfulWriteRequest()
+
+        # If data doesn't conform to validations, return error
+        except Exception as e:
+            return Response(status = 415)
 
     if request.method == 'DELETE':
-        skillsCollection.delete_one({'_id': ObjectId(request.json['_id'])})
-        return jsonify(
-            code=200,
-            msg="Success"
-        )
 
-@Skills.route("/api/skills/filter", methods=['GET'])
+        skillsCollection.delete_one({'_id': ObjectId(request.json['_id'])})
+        return handleSuccessfulWriteRequest()
+
+@Skills.route("/api/skills/one", methods=['GET'])
 def sendFilteredKeywords():
 
-    # Prepare the find object
-    #########################
-
+    # Initialize the find object
     findObj = {}
 
     # Document ID
     suppliedId = request.args.get("id")
     if suppliedId is not None:
         findObj["_id"] = ObjectId(suppliedId)
+
+    # Skill Code
+    suppliedCode = request.args.get("skillCode")
+    if suppliedCode is not None:
+        findObj["code"] = suppliedCode
 
     # Demonstrable
     isDemonstrable = request.args.get("demonstrable")
@@ -84,9 +92,7 @@ def sendFilteredKeywords():
     if isProficient is not None:
         findObj["showInGallery"] = request.args.get("proficient") == "true"
 
-    # Prepare the sort object
-    #########################
-
+    # Initialize the sort array
     sortArr = []
     
     # Name
@@ -104,7 +110,5 @@ def sendFilteredKeywords():
         sortArr.append(("name", pymongo.ASCENDING))
 
     # Make the DB Query
-    #########################
-
     dataset = skillsCollection.find(findObj).sort(sortArr)
     return jsonResponse(dataset)

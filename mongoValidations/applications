@@ -1,0 +1,66 @@
+{
+    $jsonSchema: {
+      additionalProperties: false,
+      properties: {
+        _id: {
+          bsonType: 'objectId'
+        },
+        title: {
+          type: 'string',
+          uniqueItems: true
+        },
+        publish_date: {
+          bsonType: 'date'
+        },
+        is_featured: {
+          type: 'boolean'
+        },
+        support_status_code: {
+          type: 'string'
+        },
+        description: {
+          type: [
+            'string',
+            'null'
+          ]
+        },
+        deployed_link: {
+          type: [
+            'string',
+            'null'
+          ]
+        },
+        front_end_repo_link: {
+          type: [
+            'string',
+            'null'
+          ]
+        },
+        back_end_repo_link: {
+          type: [
+            'string',
+            'null'
+          ]
+        },
+        image_url: {
+          type: [
+            'string',
+            'null'
+          ]
+        },
+        associated_skill_codes: {
+          type: 'array',
+          uniqueItems: true,
+          items: {
+            type: 'string'
+          }
+        }
+      },
+      required: [
+        'title',
+        'publish_date',
+        'is_featured',
+        'support_status_code'
+      ]
+    }
+  }
