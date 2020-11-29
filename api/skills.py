@@ -1,6 +1,5 @@
 # General imports
 from flask import Flask, Blueprint, request, jsonify
-import os
 
 # MongoDB specific imports
 import pymongo
@@ -28,6 +27,7 @@ def processSkillsRead():
 @Skills.route("/api/skills", methods=['POST', 'PUT', 'DELETE'])
 def processSkillsWrite():
 
+    # For write actions, authenticate the user
     if not isAuthenticatedUser(request): 
         return handleUnauthenticatedRequest()
 
@@ -35,12 +35,13 @@ def processSkillsWrite():
 
         try:
             myRequest = request.json
-            myRequest['is_proficient'] = True if request.json['is_proficient'] == 'true' else False # Parse boolean
-            myRequest['is_visible_in_app_details'] = True if request.json['is_visible_in_app_details'] == 'true' else False # Parse boolean
+            myRequest['is_proficient'] = True if request.json['is_proficient'] == 'true' else False # Parse bool
+            myRequest['is_visible_in_app_details'] = True if request.json['is_visible_in_app_details'] == 'true' else False # Parse bool
 
             skillsCollection.insert_one(myRequest)
             return handleSuccessfulWriteRequest()
         
+        # If data doesn't conform to validations, return error
         except Exception as e:
             return Response(status = 415)
 
@@ -50,11 +51,13 @@ def processSkillsWrite():
             incomingId = request.json['_id']
             myQuery = {'_id': ObjectId(incomingId['$oid'])}
             myRequestWithoutId = request.json
-            myRequestWithoutId['is_proficient'] = True if request.json['is_proficient'] == 'true' else False
+            myRequestWithoutId['is_proficient'] = True if request.json['is_proficient'] == 'true' else False #Parse bool
+            myRequest['is_visible_in_app_details'] = True if request.json['is_visible_in_app_details'] == 'true' else False # Parse bool
             del myRequestWithoutId['_id']
             skillsCollection.replace_one(myQuery, myRequestWithoutId, upsert=True)
             return handleSuccessfulWriteRequest()
 
+        # If data doesn't conform to validations, return error
         except Exception as e:
             return Response(status = 415)
 

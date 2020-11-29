@@ -97,6 +97,7 @@ def processApplicationsRead():
 @Applications.route("/api/applications", methods=['POST', 'PUT', 'DELETE'])
 def processApplicationsWrite():
 
+    # For write actions, authenticate the user
     if not isAuthenticatedUser(request): 
         return handleUnauthenticatedRequest()
 
@@ -105,11 +106,12 @@ def processApplicationsWrite():
         x = request.json
 
         try:
-            x['publish_date'] = datetime.datetime.strptime(request.json['publish_date'], '%Y-%m-%d')
-            x['is_featured'] = True if request.json['is_featured'] == 'true' else False
+            x['publish_date'] = datetime.datetime.strptime(request.json['publish_date'], '%Y-%m-%d') # Parse bool
+            x['is_featured'] = True if request.json['is_featured'] == 'true' else False # Parse bool
             applicationsCollection.insert_one(x)
             return handleSuccessfulWriteRequest()
         
+        # If data doesn't conform to validations, return error
         except Exception as e:
             return Response(status = 415)
 
@@ -124,6 +126,7 @@ def processApplicationsWrite():
             applicationsCollection.replace_one(myQuery, myRequestWithoutId, upsert=True)
             return handleSuccessfulWriteRequest()
 
+        # If data doesn't conform to validations, return error
         except Exception as e:
             return Response(status = 415)
 

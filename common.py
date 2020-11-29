@@ -23,14 +23,12 @@ def jsonResponse(dataset):
     return json.dumps(arr)
 
 def isAuthenticatedUser(request):
-    print('authenticating user')
     if request.headers.get('user-token') != os.getenv('SECRET_TOKEN', 'mysecrettoken'):
         return False
     else:
         return True
         
 def handleUnauthenticatedRequest():
-    print(request.headers.get('user-token'), os.getenv('SECRET_TOKEN', 'mysecrettoken'))
     return jsonify(
         code=401,
         msg="Unauthorized"

@@ -8,16 +8,16 @@ import pymongo
 from common import *
 
 # Define collections
-skillTypesCollection = database["skill_types"]
+supportStatusesCollection = database["support_statuses"]
 
 # Define blueprint
-SkillTypes = Blueprint('SkillTypes', __name__)
+SupportStatuses = Blueprint('SupportStatuses', __name__)
 
 # Begin routes
 
-@SkillTypes.route("/api/skillTypes", methods=['GET'])
+@SupportStatuses.route("/api/supportStatuses", methods=['GET'])
 def processSkillsRead():
 
     if request.method == 'GET':
-        dataset = skillTypesCollection.find().sort([("label", pymongo.ASCENDING), ("code", pymongo.ASCENDING)])
+        dataset = supportStatusesCollection.find().sort([("label", pymongo.ASCENDING), ("code", pymongo.ASCENDING)])
         return jsonResponse(dataset)
