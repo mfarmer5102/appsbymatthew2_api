@@ -35,14 +35,15 @@ def processSkillsWrite():
 
         try:
             myRequest = request.json
-            myRequest['is_proficient'] = True if request.json['is_proficient'] == 'true' else False # Parse bool
-            myRequest['is_visible_in_app_details'] = True if request.json['is_visible_in_app_details'] == 'true' else False # Parse bool
+            myRequest['is_proficient'] = True if (request.json['is_proficient'] == 'true' or request.json['is_proficient'] == True) else False # Parse bool
+            myRequest['is_visible_in_app_details'] = True if (request.json['is_visible_in_app_details'] == 'true' or request.json['is_visible_in_app_details'] == True) else False # Parse bool
 
             skillsCollection.insert_one(myRequest)
             return handleSuccessfulWriteRequest()
         
         # If data doesn't conform to validations, return error
         except Exception as e:
+            print(e)
             return Response(status = 415)
 
     if request.method == 'PUT':
@@ -51,14 +52,15 @@ def processSkillsWrite():
             incomingId = request.json['_id']
             myQuery = {'_id': ObjectId(incomingId['$oid'])}
             myRequestWithoutId = request.json
-            myRequestWithoutId['is_proficient'] = True if request.json['is_proficient'] == 'true' else False #Parse bool
-            myRequest['is_visible_in_app_details'] = True if request.json['is_visible_in_app_details'] == 'true' else False # Parse bool
+            myRequestWithoutId['is_proficient'] = True if (request.json['is_proficient'] == 'true' or request.json['is_proficient'] == True) else False #Parse bool
+            myRequestWithoutId['is_visible_in_app_details'] = True if (request.json['is_visible_in_app_details'] == 'true' or request.json['is_visible_in_app_details'] == True) else False # Parse bool
             del myRequestWithoutId['_id']
             skillsCollection.replace_one(myQuery, myRequestWithoutId, upsert=True)
             return handleSuccessfulWriteRequest()
 
         # If data doesn't conform to validations, return error
         except Exception as e:
+            print(e)
             return Response(status = 415)
 
     if request.method == 'DELETE':
