@@ -106,13 +106,14 @@ def processApplicationsWrite():
         x = request.json
 
         try:
-            x['publish_date'] = datetime.datetime.strptime(request.json['publish_date'], '%Y-%m-%d') # Parse bool
-            x['is_featured'] = True if request.json['is_featured'] == 'true' else False # Parse bool
+            x['publish_date'] = datetime.datetime.strptime(request.json['publish_date'], '%Y-%m-%d')
+            x['is_featured'] = True if (request.json['is_featured'] == 'true' or request.json['is_featured'] == True) else False # Parse bool
             applicationsCollection.insert_one(x)
             return handleSuccessfulWriteRequest()
         
         # If data doesn't conform to validations, return error
         except Exception as e:
+            print(e)
             return Response(status = 415)
 
     if request.method == 'PUT':
@@ -122,12 +123,14 @@ def processApplicationsWrite():
             myQuery = {'_id': ObjectId(incomingId['$oid'])}
             myRequestWithoutId = request.json
             myRequestWithoutId['publish_date'] = datetime.datetime.strptime(request.json['publish_date'], '%Y-%m-%d')
+            myRequestWithoutId['is_featured'] = True if (request.json['is_featured'] == 'true' or request.json['is_featured'] == True) else False # Parse bool
             del myRequestWithoutId['_id']
             applicationsCollection.replace_one(myQuery, myRequestWithoutId, upsert=True)
             return handleSuccessfulWriteRequest()
 
         # If data doesn't conform to validations, return error
         except Exception as e:
+            print(e)
             return Response(status = 415)
 
     if request.method == 'DELETE':
