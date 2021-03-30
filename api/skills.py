@@ -105,7 +105,7 @@ def sendFilteredKeywords():
     # Type
     sortType = request.args.get("sortType")
     if sortType is not None:
-        sortObj.append(("type", pymongo.ASCENDING if request.args.get("sortName") == "asc" else pymongo.DESCENDING))
+        sortArr.append(("type", pymongo.ASCENDING if request.args.get("sortName") == "asc" else pymongo.DESCENDING))
     
     # Default
     if not sortArr: # Mongo query won't work if the sort array is empty, so give it something to sort on
