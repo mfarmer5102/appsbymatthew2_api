@@ -26,7 +26,7 @@ pipeline {
     stage('Push to GCR') {
       steps {
         script {
-          docker.withRegistry('https://gcr.io', 'gcr:appsbymatthew') {
+          docker.withRegistry('https://gcr.io', 'gcr:AppsByMatthew') {
             def customImage = docker.build("gcr.io/appsbymatthew-api/appsbymatthew-api:latest")
             customImage.push()
           }
