@@ -11,16 +11,7 @@ pipeline {
       }
     }
 
-    // BUILDING ////////////////////////////////////////////////////////////////////////////////////////////
-
-    // /* Build the Docker image */
-    // stage('Build') {
-    //   steps {
-    //     sh 'docker build -t gcr.io/appsbymatthew-api/appsbymatthew-api:latest .'
-    //   }
-    // }
-
-    // PUSHING ////////////////////////////////////////////////////////////////////////////////////////////
+    // BUILDING AND PUSHING /////////////////////////////////////////////////////////////////////////
 
     /* Push the image to Google Container Registry */
     stage('Push to GCR') {
@@ -39,7 +30,7 @@ pipeline {
       steps {
         script {
           docker.withRegistry('', 'Docker_Hub') {
-            def customImage = docker.build("mfarmer5102/appsbymatthew-client:latest")
+            def customImage = docker.build("mfarmer5102/appsbymatthew-api:latest")
             customImage.push()
           }
         }
