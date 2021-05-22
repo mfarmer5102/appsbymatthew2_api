@@ -25,6 +25,9 @@
           type: 'string',
           minLength: 1,
           uniqueItems: true
+        },
+        provide_disclaimer: {
+          type: 'boolean'
         }
       },
       required: [
