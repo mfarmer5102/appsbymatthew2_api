@@ -20,6 +20,7 @@ from api.cron import Cron
 from api.skills import Skills
 from api.skillTypes import SkillTypes
 from api.supportStatuses import SupportStatuses
+from api.trafficReports import TrafficReports
 
 # Register route files
 app.register_blueprint(Applications)
@@ -27,6 +28,7 @@ app.register_blueprint(Cron)
 app.register_blueprint(Skills)
 app.register_blueprint(SkillTypes)
 app.register_blueprint(SupportStatuses)
+app.register_blueprint(TrafficReports)
 
 # Root URL Route
 @app.route('/')
