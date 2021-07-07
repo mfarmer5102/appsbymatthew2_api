@@ -22,6 +22,13 @@ def jsonResponse(dataset):
         arr.append(bsonToJson(item))
     return json.dumps(arr)
 
+def flattenMongoIds(dataset):
+    formattedArr = []
+    for datum in dataset:
+        datum["_idFlat"] = str(datum["_id"])
+        formattedArr.append(datum)
+    return formattedArr
+
 def isAuthenticatedUser(request):
     if request.headers.get('user-token') != os.getenv('SECRET_TOKEN', 'mysecrettoken'):
         return False

@@ -24,4 +24,4 @@ def processTrafficReportsRead():
 
     if request.method == 'GET':
         dataset = trafficReportsCollection.find().sort([("report_end_date", pymongo.DESCENDING)])
-        return jsonResponse(dataset)
+        return jsonResponse(flattenMongoIds(dataset))

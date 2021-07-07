@@ -20,4 +20,4 @@ def processSkillsRead():
 
     if request.method == 'GET':
         dataset = supportStatusesCollection.find().sort([("label", pymongo.ASCENDING), ("code", pymongo.ASCENDING)])
-        return jsonResponse(dataset)
+        return jsonResponse(flattenMongoIds(dataset))

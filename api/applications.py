@@ -91,8 +91,7 @@ def processApplicationsRead():
 
         # Make the DB Query
         dataset = applicationsCollection.find(findObj).sort(sortArr).skip(skipValue).limit(limitValue)
-        x = jsonResponse(dataset)
-        return x
+        return jsonResponse(flattenMongoIds(dataset))
 
 @Applications.route("/api/applications", methods=['POST', 'PUT', 'DELETE'])
 def processApplicationsWrite():
