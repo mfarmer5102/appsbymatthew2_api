@@ -22,7 +22,7 @@ def processSkillsRead():
 
     if request.method == 'GET':
         dataset = skillsCollection.find().sort([("type", pymongo.ASCENDING), ("name", pymongo.ASCENDING)])
-        return jsonResponse(dataset)
+        return jsonResponse(flattenMongoIds(dataset))
 
 @Skills.route("/api/skills", methods=['POST', 'PUT', 'DELETE'])
 def processSkillsWrite():
@@ -113,4 +113,4 @@ def sendFilteredKeywords():
 
     # Make the DB Query
     dataset = skillsCollection.find(findObj).sort(sortArr)
-    return jsonResponse(dataset)
+    return jsonResponse(flattenMongoIds(dataset))
