@@ -12,7 +12,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Define port on which to listen
-port = int(os.environ.get("PORT", 5000))
+port = int(os.environ.get("PORT", 5001))
 
 # Import route files
 from api.applications import Applications
