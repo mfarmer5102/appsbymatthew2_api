@@ -55,6 +55,7 @@ def processSkillsWrite():
             myRequestWithoutId['is_proficient'] = True if (request.json['is_proficient'] == 'true' or request.json['is_proficient'] == True) else False #Parse bool
             myRequestWithoutId['is_visible_in_app_details'] = True if (request.json['is_visible_in_app_details'] == 'true' or request.json['is_visible_in_app_details'] == True) else False # Parse bool
             del myRequestWithoutId['_id']
+            del myRequestWithoutId['_idFlat']
             skillsCollection.replace_one(myQuery, myRequestWithoutId, upsert=True)
             return handleSuccessfulWriteRequest()
 

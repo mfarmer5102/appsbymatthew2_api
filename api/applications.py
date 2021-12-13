@@ -124,6 +124,7 @@ def processApplicationsWrite():
             myRequestWithoutId['publish_date'] = datetime.datetime.strptime(request.json['publish_date'], '%Y-%m-%d')
             myRequestWithoutId['is_featured'] = True if (request.json['is_featured'] == 'true' or request.json['is_featured'] == True) else False # Parse bool
             del myRequestWithoutId['_id']
+            del myRequestWithoutId['_idFlat']
             applicationsCollection.replace_one(myQuery, myRequestWithoutId, upsert=True)
             return handleSuccessfulWriteRequest()
 
