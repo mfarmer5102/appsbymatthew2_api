@@ -3,3 +3,9 @@
 .pyc
 *.pyc
 __pycache__/
+/.idea/appsbymatthew_api.iml
+/.idea/misc.xml
+/.idea/.gitignore
+/.idea/modules.xml
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/vcs.xml

@@ -15,6 +15,7 @@ CORS(app)
 port = int(os.environ.get("PORT", 5001))
 
 # Import route files
+from api.ai import Ai
 from api.applications import Applications
 from api.cron import Cron
 from api.skills import Skills
@@ -23,6 +24,7 @@ from api.supportStatuses import SupportStatuses
 from api.trafficReports import TrafficReports
 
 # Register route files
+app.register_blueprint(Ai)
 app.register_blueprint(Applications)
 app.register_blueprint(Cron)
 app.register_blueprint(Skills)

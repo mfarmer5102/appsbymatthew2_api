@@ -9,8 +9,8 @@ import json
 import datetime
 
 # Variables
-myclient = pymongo.MongoClient(os.getenv('DB_URL', "mongodb://localhost:27017"))
-database = myclient[(os.getenv('DB_NAME', "appsbymatthew_dev"))]
+myclient = pymongo.MongoClient(os.getenv('MONGO_INSTANCE_URL', "mongodb://localhost:27017"))
+database = myclient["apps_by_matthew"]
 
 # Functions
 def bsonToJson(item):
