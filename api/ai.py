@@ -94,7 +94,7 @@ def search_embedding_plus():
                             "index": "vector_index",
                             "path": "embeddings",
                             "queryVector": embedding,
-                            "limit": 3,
+                            "limit": 10,
                             "numCandidates": 100
                         }
                 },
