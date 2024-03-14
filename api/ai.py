@@ -68,6 +68,65 @@ def search_embedding():
 
         return json_data
 
+@Ai.route("/api/ai/searchEmbeddingsPlus", methods=['GET'])
+def search_embedding_plus():
+    if request.method == 'GET':
+        user_input = request.args.get("text")
+
+        client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+
+        # Embed a line of text
+        response = client.embeddings.create(
+            model="text-embedding-ada-002",
+            input=[user_input]
+        )
+        # Extract the AI output embedding as a list of floats
+        embedding = response.data[0].embedding
+        # print(embedding)
+
+        applicationsCollection = database["applications"]
+
+        cursor = applicationsCollection.aggregate(
+            [
+                {
+                    "$vectorSearch":
+                        {
+                            "index": "vector_index",
+                            "path": "embeddings",
+                            "queryVector": embedding,
+                            "limit": 3,
+                            "numCandidates": 100
+                        }
+                },
+                {
+                    "$unset": "embeddings"
+                }
+            ]
+        )
+
+        print("******")
+        json_data = dumps(cursor)
+        print(json_data)
+
+        print(json.loads(json_data))
+        print("!!!")
+        print(str(json_data))
+
+        completion = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            # response_format={ "type": "json_object" },
+            # stop=["\n"],  # Remove line breaks in text response
+            messages=[
+                {"role": "system", "content": "You receive JSON data and explain it. You will only receive a few records and never the full dataset."},
+                {"role": "system", "content": json_data},
+                {"role": "user", "content": user_input}
+            ]
+        )
+
+        elaboration = completion.choices[0].message.content
+
+        return elaboration
+
 @Ai.route("/api/ai", methods=['GET'])
 def processApplicationsRead():
     if request.method == 'GET':
