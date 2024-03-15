@@ -117,7 +117,7 @@ def search_embedding_plus():
             # response_format={ "type": "json_object" },
             # stop=["\n"],  # Remove line breaks in text response
             messages=[
-                {"role": "system", "content": "You receive JSON data and explain it. You will only receive a few records and never the full dataset."},
+                {"role": "system", "content": "You receive JSON data that you explain to the user in understandable terms. You will only receive a few records and never the full dataset."},
                 {"role": "system", "content": json_data},
                 {"role": "user", "content": user_input}
             ]
@@ -125,10 +125,10 @@ def search_embedding_plus():
 
         elaboration = completion.choices[0].message.content
 
-        return elaboration
+        return {"text": elaboration}
 
-@Ai.route("/api/ai", methods=['GET'])
-def processApplicationsRead():
+@Ai.route("/api/ai/defineMongoFilter", methods=['GET'])
+def generate_mongo_filter():
     if request.method == 'GET':
         user_input = request.args.get("text")
 
