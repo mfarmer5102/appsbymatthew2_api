@@ -114,10 +114,12 @@ def search_embedding_plus():
 
         completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            # response_format={ "type": "json_object" },
-            # stop=["\n"],  # Remove line breaks in text response
             messages=[
-                {"role": "system", "content": "You receive JSON data that you explain to the user in understandable terms. You will only receive a few records and never the full dataset."},
+                {"role": "system", "content": """
+                    You explain information about Matt's portfolio to potential employers.
+                    Your goal is to hype Matt up and help him get a job.
+                    You will only receive a few records and never the full dataset.
+                """},
                 {"role": "system", "content": json_data},
                 {"role": "user", "content": user_input}
             ]
