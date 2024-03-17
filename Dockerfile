@@ -24,9 +24,7 @@
 ## ALPINE
 ####################################################################
 
-FROM alpine:latest
-RUN apk add python3
-RUN apk add py3-pip
+FROM python:alpine3.18
 
 COPY . /app
 WORKDIR /app
