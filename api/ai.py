@@ -280,7 +280,8 @@ def do_function_calls():
                         },
                         'is_featured': {
                             'type': 'boolean',
-                            'description': 'Whether or not the application is featured.'
+                            'description': 'Whether or not the application is featured.',
+                            "default": False
                         },
                         'support_status': {
                             'type': 'string',
@@ -290,7 +291,8 @@ def do_function_calls():
                                 'DISCONTINUED',
                                 'EXPERIMENTAL',
                                 'INACTIVE'
-                            ]
+                            ],
+                            "default": "ACTIVE"
                         }
                     }
                 }
