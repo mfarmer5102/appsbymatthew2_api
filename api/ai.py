@@ -161,9 +161,9 @@ def generate_mongo_filter():
             "text": completion.choices[0].message.content
         }
 
-@Ai.route("/api/ai/functionCalls", methods=['GET'])
-def do_function_calls():
 
+@Ai.route("/api/ai/functionCallsExample", methods=['GET'])
+def do_function_calls_example():
     client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
     student_description = "David Nguyen is a sophomore majoring in computer science at Stanford University. He is Asian American and has a 3.8 GPA. David is known for his programming skills and is an active member of the university's Robotics Club. He hopes to pursue a career in artificial intelligence after graduating."
@@ -176,7 +176,7 @@ def do_function_calls():
     school
     grades
     club
-    
+
     This is the body of text to extract the information from: {student_description}
 
     """
@@ -241,3 +241,71 @@ def do_function_calls():
     print(x)
 
     return {"text": x}
+
+
+@Ai.route("/api/ai/functionCalls", methods=['GET'])
+def do_function_calls():
+
+    if request.method == 'GET':
+
+        user_input = request.args.get("text")
+
+        client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+
+        prompt = f"""
+        Please extract the following information from the given text and return it as a JSON object:
+    
+        title
+        is_featured
+        support_status
+    
+        This is the body of text to extract the information from: {user_input}
+    
+        """
+
+        student_custom_functions = [
+            {
+                'name': 'extract_application_info',
+                'description': 'Get the application information from the body of the input text',
+                'parameters': {
+                    'type': 'object',
+                    # "required": [
+                    #     "title",
+                    #     "is_featured"
+                    # ],
+                    'properties': {
+                        'title': {
+                            'type': 'string',
+                            'description': 'Name of the application'
+                        },
+                        'is_featured': {
+                            'type': 'boolean',
+                            'description': 'Whether or not the application is featured.'
+                        },
+                        'support_status': {
+                            'type': 'string',
+                            'description': 'The current support status of the application.',
+                            'enum': [
+                                'ACTIVE',
+                                'DISCONTINUED',
+                                'EXPERIMENTAL',
+                                'INACTIVE'
+                            ]
+                        }
+                    }
+                }
+            }
+        ]
+
+        # Generating response back from gpt-3.5-turbo
+        response = client.chat.completions.create(
+            model='gpt-3.5-turbo',
+            messages=[{'role': 'user', 'content': prompt}],
+            functions=student_custom_functions,
+            function_call='auto'
+        )
+
+        x = json.loads(response.choices[0].message.function_call.arguments)
+        print(x)
+
+        return {"text": x}
