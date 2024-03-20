@@ -293,6 +293,18 @@ def do_function_calls():
                                 'INACTIVE'
                             ],
                             "default": "ACTIVE"
+                        },
+                        'associated_skills': {
+                            'type': 'array',
+                            'description': 'A list of skills demonstrated by, used by, or associated with the application.',
+                            'items': {
+                                'type': 'string',
+                                'enum': [
+                                    'React',
+                                    'GraphQL',
+                                    'Python'
+                                ]
+                            }
                         }
                     }
                 }
@@ -308,6 +320,7 @@ def do_function_calls():
         )
 
         x = json.loads(response.choices[0].message.function_call.arguments)
+        x['title'] = x['title'].title()
         print(x)
 
         return {"text": x}
