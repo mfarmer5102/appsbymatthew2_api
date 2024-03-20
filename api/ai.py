@@ -263,10 +263,14 @@ def do_function_calls():
     
         """
 
+        prompt = f""" Please extract information from the following and return it as a JSON object: {user_input}"""
+
         student_custom_functions = [
             {
                 'name': 'extract_application_info',
-                'description': 'Get the application information from the body of the input text',
+                'description': """
+                    Get the application information from the body of the input text.
+                """,
                 'parameters': {
                     'type': 'object',
                     # "required": [
@@ -312,7 +316,7 @@ def do_function_calls():
                         },
                         'associated_skills': {
                             'type': 'array',
-                            'description': 'A list of skills demonstrated by, used by, or associated with the application.',
+                            'description': 'A list of technical skills demonstrated by, used by, or associated with the application.',
                             'items': {
                                 'type': 'string',
                                 'enum': [
@@ -336,7 +340,12 @@ def do_function_calls():
         )
 
         x = json.loads(response.choices[0].message.function_call.arguments)
-        x['title'] = x['title'].title()
+
+        try:
+            x['title'] = x['title'].title()
+        except:
+            print("couldn't apply title casing to title")
+
         print(x)
 
         return {"text": x}
