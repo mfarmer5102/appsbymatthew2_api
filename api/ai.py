@@ -40,7 +40,6 @@ def search_embedding():
         )
         # Extract the AI output embedding as a list of floats
         embedding = response.data[0].embedding
-        # print(embedding)
 
         applicationsCollection = database["applications"]
 
@@ -62,10 +61,7 @@ def search_embedding():
             ]
         )
 
-        print("******")
         json_data = dumps(cursor)
-        print(json_data)
-
         return json_data
 
 @Ai.route("/api/ai/searchEmbeddingsPlus", methods=['GET'])
@@ -104,13 +100,7 @@ def search_embedding_plus():
             ]
         )
 
-        print("******")
         json_data = dumps(cursor)
-        print(json_data)
-
-        print(json.loads(json_data))
-        print("!!!")
-        print(str(json_data))
 
         completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
@@ -162,87 +152,6 @@ def generate_mongo_filter():
         }
 
 
-@Ai.route("/api/ai/functionCallsExample", methods=['GET'])
-def do_function_calls_example():
-    client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-
-    student_description = "David Nguyen is a sophomore majoring in computer science at Stanford University. He is Asian American and has a 3.8 GPA. David is known for his programming skills and is an active member of the university's Robotics Club. He hopes to pursue a career in artificial intelligence after graduating."
-
-    prompt = f"""
-    Please extract the following information from the given text and return it as a JSON object:
-
-    name
-    major
-    school
-    grades
-    club
-
-    This is the body of text to extract the information from: {student_description}
-
-    """
-
-    student_custom_functions = [
-        {
-            'name': 'extract_student_info',
-            'description': 'Get the student information from the body of the input text',
-            'parameters': {
-                'type': 'object',
-                'properties': {
-                    'name': {
-                        'type': 'string',
-                        'description': 'Name of the person'
-                    },
-                    'major': {
-                        'type': 'string',
-                        'description': 'Major subject.'
-                    },
-                    'school': {
-                        'type': 'string',
-                        'description': 'The university name.'
-                    },
-                    'grades': {
-                        'type': 'integer',
-                        'description': 'GPA of the student.'
-                    },
-                    'club': {
-                        'type': 'string',
-                        'description': 'School club for extracurricular activities. '
-                    }
-
-                }
-            }
-        }
-    ]
-
-    # student_2_description = "Ravi Patel is a sophomore majoring in computer science at the University of Michigan. He is South Asian Indian American and has a 3.7 GPA. Ravi is an active member of the university's Chess Club and the South Asian Student Association. He hopes to pursue a career in software engineering after graduating."
-    # student_description = [student_1_description, student_2_description]
-
-    # for i in student_description:
-    #     response = client.chat.completions.create(
-    #         model='gpt-3.5-turbo',
-    #         messages=[{'role': 'user', 'content': i}],
-    #         functions=student_custom_functions,
-    #         function_call='auto'
-    #     )
-    #
-    #     # Loading the response as a JSON object
-    #     json_response = json.loads(response.choices[0].message.function_call.arguments)
-    #     print(json_response)
-
-    # Generating response back from gpt-3.5-turbo
-    response = client.chat.completions.create(
-        model='gpt-3.5-turbo',
-        messages=[{'role': 'user', 'content': prompt}],
-        functions=student_custom_functions,
-        function_call='auto'
-    )
-
-    x = json.loads(response.choices[0].message.function_call.arguments)
-    print(x)
-
-    return {"text": x}
-
-
 @Ai.route("/api/ai/functionCalls", methods=['GET'])
 def do_function_calls():
 
@@ -251,17 +160,6 @@ def do_function_calls():
         user_input = request.args.get("text")
 
         client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-
-        prompt = f"""
-        Please extract the following information from the given text and return it as a JSON object:
-    
-        title
-        is_featured
-        support_status
-    
-        This is the body of text to extract the information from: {user_input}
-    
-        """
 
         prompt = f""" Please extract information from the following and return it as a JSON object: {user_input}"""
 
