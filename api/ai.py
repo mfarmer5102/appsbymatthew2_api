@@ -278,6 +278,22 @@ def do_function_calls():
                             'type': 'string',
                             'description': 'Name of the application'
                         },
+                        'publish_date': {
+                            'type': 'string',
+                            'description': 'The date on which the application was published'
+                        },
+                        'description': {
+                            'type': 'string',
+                            'description': 'A description for the application, or how the application is described.'
+                        },
+                        'image_url': {
+                            'type': 'string',
+                            'description': 'The image or thumbnail to show for the application.'
+                        },
+                        'deployed_link': {
+                            'type': 'string',
+                            'description': 'The URL or link at which the application is deployed.'
+                        },
                         'is_featured': {
                             'type': 'boolean',
                             'description': 'Whether or not the application is featured.',
