@@ -14,7 +14,6 @@ def execute_embedding_generation(client, input):
 
 
 def execute_embedding_search(client, db_and_collection, user_input):
-
     embedding = execute_embedding_generation(client, user_input)
 
     cursor = db_and_collection.aggregate(
@@ -65,3 +64,15 @@ def execute_chat_completion(client, context, system_input, user_input):
     )
 
     return completion.choices[0].message.content
+
+
+def handle_function_call(function_output, function_name):
+    x = function_name
+    if x == 'create_upsert_statement':
+        print(function_name, function_output)
+    elif x == 'extract_application_info':
+        print(function_name, function_output)
+    elif x == 'extract_skill_info':
+        print(function_name, function_output)
+    else:
+        print('Function name not found.')
