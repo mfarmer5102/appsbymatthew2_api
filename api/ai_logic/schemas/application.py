@@ -1,0 +1,50 @@
+application_schema = {
+    'title': {
+        'type': 'string',
+        'description': 'Name of the application'
+    },
+    'publish_date': {
+        'type': 'string',
+        'description': 'The date on which the application was published'
+    },
+    'description': {
+        'type': 'string',
+        'description': 'A description for the application, or how the application is described.'
+    },
+    'image_url': {
+        'type': 'string',
+        'description': 'The image or thumbnail to show for the application.'
+    },
+    'deployed_link': {
+        'type': 'string',
+        'description': 'The URL or link at which the application is deployed.'
+    },
+    'is_featured': {
+        'type': 'boolean',
+        'description': 'Whether or not the application is featured.',
+        "default": False
+    },
+    'support_status': {
+        'type': 'string',
+        'description': 'The current support status of the application.',
+        'enum': [
+            'ACTIVE',
+            'DISCONTINUED',
+            'EXPERIMENTAL',
+            'INACTIVE'
+        ],
+        "default": "ACTIVE"
+    },
+    'associated_skills': {
+        'type': 'array',
+        'description': 'A list of technical skills demonstrated by, used by, or associated with the application.',
+        'items': {
+            'type': 'string',
+            'enum': [
+                'React',
+                'GraphQL',
+                'Python'
+            ]
+        }
+    }
+}
