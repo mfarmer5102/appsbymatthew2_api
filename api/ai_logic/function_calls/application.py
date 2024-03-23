@@ -1,6 +1,20 @@
 from api.ai_logic.schemas.application import application_schema
 
-func_create_upsert_statement = {
+func_find_application_statement = {
+    'name': 'find_application_statement',
+    'description': "Find information about an application.",
+    'parameters': {
+        'type': 'object',
+        'properties': {
+            'find_clause': {
+                'type': 'object',
+                'properties': application_schema
+            }
+        }
+    }
+}
+
+func_create_upsert_application_statement = {
     'name': 'create_upsert_statement',
     'description': 'Create or update information about an application.',
     'parameters': {
@@ -11,7 +25,7 @@ func_create_upsert_statement = {
                 'properties': {
                     'title': {
                         'type': 'string',
-                        'description': 'Name of the application'
+                        'description': 'Name of the application.'
                     },
                 }
             },
@@ -23,20 +37,14 @@ func_create_upsert_statement = {
     }
 }
 
-func_extract_application_info = {
-    'name': 'extract_application_info',
-    'description': "Get the application information from the body of the input text",
-    'parameters': {
-        'type': 'object',
-        # "required": [
-        #     "title",
-        #     "is_featured"
-        # ],
-        'properties': application_schema
-    }
+func_delete_application_statement = {
+    'name': 'delete_application_statement',
+    'description': "Delete an application.",
 }
 
+
 application_functions = [
-    func_create_upsert_statement,
-    func_extract_application_info
+    func_find_application_statement,
+    func_create_upsert_application_statement,
+    func_delete_application_statement
 ]

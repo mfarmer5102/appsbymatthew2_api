@@ -1,8 +1,8 @@
 from api.ai_logic.schemas.skill import skill_schema
 
-func_extract_skill_info = {
-    'name': 'extract_skill_info',
-    'description': "Get the skill information from the body of the input text",
+func_find_skill_statement = {
+    'name': 'find_skill_statement',
+    'description': "Find information about a skill.",
     'parameters': {
         'type': 'object',
         # "required": [
@@ -14,5 +14,5 @@ func_extract_skill_info = {
 }
 
 skill_functions = [
-    func_extract_skill_info
+    func_find_skill_statement
 ]

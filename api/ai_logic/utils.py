@@ -67,12 +67,20 @@ def execute_chat_completion(client, context, system_input, user_input):
 
 
 def handle_function_call(function_output, function_name):
+
+    # Function name
     x = function_name
-    if x == 'create_upsert_statement':
+
+    # Applications
+    if x == 'find_application_statement':
         print(function_name, function_output)
-    elif x == 'extract_application_info':
+    elif x == 'create_upsert_application_statement':
         print(function_name, function_output)
-    elif x == 'extract_skill_info':
+    elif x == 'delete_application_statement':
+        print(function_name, function_output)
+
+    # Skills
+    elif x == 'find_skill_statement':
         print(function_name, function_output)
     else:
         print('Function name not found.')
