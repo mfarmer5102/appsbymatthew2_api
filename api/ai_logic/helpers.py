@@ -48,7 +48,10 @@ def execute_function_call(client, prompt, functions):
         function_call='auto'
     )
 
-    return json.loads(response.choices[0].message.function_call.arguments)
+    function_name = response.choices[0].message.function_call.name
+    arguments = response.choices[0].message.function_call.arguments
+
+    return json.loads(arguments), function_name
 
 
 def execute_chat_completion(client, context, system_input, user_input):

@@ -5,7 +5,6 @@ from api.ai_logic.custom_functions import application_functions
 from api.ai_logic.helpers import execute_embedding_generation, execute_embedding_search, execute_function_call, \
     execute_chat_completion
 from common import *
-from bson.json_util import dumps
 
 # Define blueprint
 Ai = Blueprint('Ai', __name__)
@@ -57,3 +56,14 @@ def do_function_calls_endpoint():
         print(x)
 
         return {"text": x}
+
+@Ai.route("/api/ai/generateMongoQuery", methods=['GET'])
+def do_application_upsert_endpoint():
+    if request.method == 'GET':
+
+        user_input = request.args.get("text")
+        x, y = execute_function_call(client, user_input, application_functions)
+
+        print(x, y)
+
+        return {"data": x, "function_name": y}
