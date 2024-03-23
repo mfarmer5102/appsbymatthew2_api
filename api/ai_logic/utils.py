@@ -73,24 +73,43 @@ def handle_function_call(function_output, function_name):
 
     # Function name
     x = function_name
+    print(x)
 
     # Applications
     if x == 'find_application_statement':
-        print(function_output['find_clause'])
-        res = applications_collection.find_one(
-            function_output['find_clause'],
-            {'_id': 0, 'embeddings': 0}
-        )
-        print(res)
-        return res
-    elif x == 'create_upsert_application_statement':
-        res = applications_collection.update_one(
-            function_output['find_clause'],
-            {'$set': function_output['set_clause']},
-            upsert=True
-        )
-        print(res)
-        return res
+        try:
+            print(function_output['find_clause'])
+            res = applications_collection.find_one(
+                function_output['find_clause'],
+                {'_id': 0, 'embeddings': 0}
+            )
+            print(res)
+            return res
+        except Exception as error:
+            print(error)
+            return "Sorry, I encountered an issue while trying to find that application."
+    elif x == 'create_application_statement':
+        try:
+            res = applications_collection.insert_one(
+                function_output['insert_clause']
+            )
+            print(res)
+            return "Application created successfully!"
+        except Exception as error:
+            print(error)
+            return "Sorry, I encountered an issue while trying to create that application."
+    elif x == 'update_application_statement':
+        try:
+            res = applications_collection.update_one(
+                function_output['find_clause'],
+                {'$set': function_output['set_clause']},
+                upsert=True
+            )
+            print(res)
+            return "Application updated successfully!"
+        except Exception as error:
+            print(error)
+            return "Sorry, I encountered an issue while trying to update that application."
     elif x == 'delete_application_statement':
         res = 'No, I cannot delete applications.'
         print(res)

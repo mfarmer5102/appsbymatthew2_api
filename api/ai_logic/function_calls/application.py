@@ -8,25 +8,48 @@ func_find_application_statement = {
         'properties': {
             'find_clause': {
                 'type': 'object',
+                'required': [
+                    "title"
+                ],
                 'properties': application_schema
             }
         }
     }
 }
 
-func_create_upsert_application_statement = {
-    'name': 'create_upsert_statement',
-    'description': 'Create or update information about an application.',
+func_create_application_statement = {
+    'name': 'create_application_statement',
+    'description': "Create a new record containing application information.",
+    'parameters': {
+        'type': 'object',
+        'properties': {
+            'insert_clause': {
+                'type': 'object',
+                'required': [
+                    "title"
+                ],
+                'properties': application_schema
+            }
+        }
+    }
+}
+
+func_update_application_statement = {
+    'name': 'update_application_statement',
+    'description': 'Update information about an application.',
     'parameters': {
         'type': 'object',
         'properties': {
             'find_clause': {
                 'type': 'object',
+                "required": [
+                    "title"
+                ],
                 'properties': {
                     'title': {
                         'type': 'string',
-                        'description': 'Name of the application.'
-                    },
+                        'description': 'Name or title of the application.'
+                    }
                 }
             },
             'set_clause': {
@@ -45,6 +68,7 @@ func_delete_application_statement = {
 
 application_functions = [
     func_find_application_statement,
-    func_create_upsert_application_statement,
+    func_create_application_statement,
+    func_update_application_statement,
     func_delete_application_statement
 ]
