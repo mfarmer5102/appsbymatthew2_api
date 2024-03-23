@@ -64,6 +64,21 @@ def do_generic_function_call_endpoint():
         x, y = execute_function_call(client, user_input, defined_functions)
 
         print(x, y)
-        handle_function_call(x, y)
+        res = handle_function_call(x, y)
+        print(res)
 
-        return {"data": x, "function_name": y}
+        try:
+            del res['publish_date']
+        except:
+            None
+
+        print(type(res))
+
+        built_reply = {
+            'data': res,
+            'function_name': y
+        }
+
+        print(built_reply)
+
+        return json.dumps(built_reply)

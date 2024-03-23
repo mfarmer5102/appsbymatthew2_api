@@ -1,6 +1,9 @@
 import json
 from json import dumps
+from common import database
 
+applications_collection = database["applications"]
+skills_collection = database["skills"]
 
 def execute_embedding_generation(client, input):
     # Embed a line of text
@@ -73,14 +76,34 @@ def handle_function_call(function_output, function_name):
 
     # Applications
     if x == 'find_application_statement':
-        print(function_name, function_output)
+        print(function_output['find_clause'])
+        res = applications_collection.find_one(
+            function_output['find_clause'],
+            {'_id': 0, 'embeddings': 0}
+        )
+        print(res)
+        return res
     elif x == 'create_upsert_application_statement':
-        print(function_name, function_output)
+        res = applications_collection.update_one(
+            function_output['find_clause'],
+            {'$set': function_output['set_clause']},
+            upsert=True
+        )
+        print(res)
+        return res
     elif x == 'delete_application_statement':
-        print(function_name, function_output)
+        res = 'No, I cannot delete applications.'
+        print(res)
+        return res
 
     # Skills
     elif x == 'find_skill_statement':
-        print(function_name, function_output)
+        res = skills_collection.find_one(
+            function_output['find_clause']
+        )
+        print(res)
+        return res
     else:
-        print('Function name not found.')
+        res = 'Function name not found.'
+        print(res)
+        return res
