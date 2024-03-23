@@ -1,3 +1,7 @@
+from common import database
+
+skill_types_collection = database['skill_types']
+
 skill_schema = {
     'name': {
         'type': 'string',
@@ -9,7 +13,8 @@ skill_schema = {
     },
     'skill_type_code': {
         'type': 'string',
-        'description': 'The type of skill in uppercase with no spaces.'
+        'description': 'The type of skill in uppercase with no spaces.',
+        'enum': skill_types_collection.distinct('code'),
     },
     'is_proficient': {
         'type': 'boolean',

@@ -1,3 +1,8 @@
+from common import database
+
+skills_collection = database["skills"]
+support_status_collection = database["support_statuses"]
+
 application_schema = {
     'title': {
         'type': 'string',
@@ -27,24 +32,15 @@ application_schema = {
     'support_status': {
         'type': 'string',
         'description': 'The current support status of the application.',
-        'enum': [
-            'ACTIVE',
-            'DISCONTINUED',
-            'EXPERIMENTAL',
-            'INACTIVE'
-        ],
+        'enum': support_status_collection.distinct('code'),
         "default": "ACTIVE"
     },
-    'associated_skills': {
+    'associated_skill_codes': {
         'type': 'array',
         'description': 'A list of technical skills demonstrated by, used by, or associated with the application.',
         'items': {
             'type': 'string',
-            'enum': [
-                'React',
-                'GraphQL',
-                'Python'
-            ]
+            'enum': skills_collection.distinct('code')
         }
     }
 }
