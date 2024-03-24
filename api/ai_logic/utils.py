@@ -1,5 +1,4 @@
 import json
-from json import dumps
 
 from api.ai_logic.function_calls.resolvers.application import *
 from api.ai_logic.function_calls.resolvers.skill import *
@@ -36,12 +35,20 @@ def execute_embedding_search(client, db_and_collection, user_input):
                     }
             },
             {
-                "$unset": "embeddings"
+                "$project": {
+                    "_id": 0,
+                    "publish_date": 0,
+                    "embeddings": 0
+                }
             }
         ]
     )
 
-    json_data = dumps(cursor)
+    res_arr = []
+    for datum in cursor:
+        res_arr.append(datum)
+
+    json_data = json.dumps(res_arr)
     return json_data
 
 

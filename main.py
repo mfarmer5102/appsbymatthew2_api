@@ -1,7 +1,7 @@
 ## App engine looks for main.py
 
 # Imports
-from flask import Flask, Blueprint, jsonify
+from flask import Flask
 from flask_cors import CORS
 import os
 
@@ -15,13 +15,13 @@ CORS(app)
 port = int(os.environ.get("PORT", 5001))
 
 # Import route files
-from api.ai import Ai
-from api.applications import Applications
-from api.cron import Cron
-from api.skills import Skills
-from api.skillTypes import SkillTypes
-from api.supportStatuses import SupportStatuses
-from api.trafficReports import TrafficReports
+from api.routes.ai import Ai
+from api.routes.applications import Applications
+from api.routes.cron import Cron
+from api.routes.skills import Skills
+from api.routes.skillTypes import SkillTypes
+from api.routes.supportStatuses import SupportStatuses
+from api.routes.trafficReports import TrafficReports
 
 # Register route files
 app.register_blueprint(Ai)
