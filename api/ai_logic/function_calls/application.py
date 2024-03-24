@@ -1,8 +1,8 @@
 from api.ai_logic.schemas.application import application_schema
 
-func_find_application_statement = {
-    'name': 'find_application_statement',
-    'description': "Find information about an application.",
+func_find_one_application_statement = {
+    'name': 'find_one_application_statement',
+    'description': "Find information about a single application.",
     'parameters': {
         'type': 'object',
         'properties': {
@@ -11,6 +11,20 @@ func_find_application_statement = {
                 'required': [
                     "title"
                 ],
+                'properties': application_schema
+            }
+        }
+    }
+}
+
+func_find_many_application_statement = {
+    'name': 'find_many_application_statement',
+    'description': "Find information about multiple applications.",
+    'parameters': {
+        'type': 'object',
+        'properties': {
+            'find_clause': {
+                'type': 'object',
                 'properties': application_schema
             }
         }
@@ -67,7 +81,8 @@ func_delete_application_statement = {
 
 
 application_functions = [
-    func_find_application_statement,
+    func_find_one_application_statement,
+    func_find_many_application_statement,
     func_create_application_statement,
     func_update_application_statement,
     func_delete_application_statement

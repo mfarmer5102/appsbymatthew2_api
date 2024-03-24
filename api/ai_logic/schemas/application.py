@@ -29,7 +29,7 @@ application_schema = {
         'description': 'Whether or not the application is featured.',
         "default": False
     },
-    'support_status': {
+    'support_status_code': {
         'type': 'string',
         'description': 'The current support status of the application.',
         'enum': support_status_collection.distinct('code'),

@@ -76,15 +76,30 @@ def handle_function_call(function_output, function_name):
     print(x)
 
     # Applications
-    if x == 'find_application_statement':
+    if x == 'find_one_application_statement':
         try:
             print(function_output['find_clause'])
             res = applications_collection.find_one(
                 function_output['find_clause'],
-                {'_id': 0, 'embeddings': 0}
+                {'_id': 0, 'embeddings': 0, 'publish_date': 0}
             )
             print(res)
             return res
+        except Exception as error:
+            print(error)
+            return "Sorry, I encountered an issue while trying to find that application."
+    elif x == 'find_many_application_statement':
+        try:
+            print(function_output['find_clause'])
+            res = applications_collection.find(
+                function_output['find_clause'],
+                {'_id': 0, 'embeddings': 0, 'publish_date': 0}
+            ).sort({'publish_date': -1}).limit(100)
+            res_arr = []
+            for app in res:
+                res_arr.append(app)
+            print(res_arr)
+            return res_arr
         except Exception as error:
             print(error)
             return "Sorry, I encountered an issue while trying to find that application."

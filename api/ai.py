@@ -67,11 +67,6 @@ def do_generic_function_call_endpoint():
         res = handle_function_call(x, y)
         print(res)
 
-        try:
-            del res['publish_date']
-        except:
-            None
-
         print(type(res))
 
         built_reply = {
