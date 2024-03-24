@@ -65,7 +65,7 @@ def do_generic_function_call_endpoint():
 
         print(x, y)
         res = handle_function_call(x, y)
-        print(res)
+        print('*****', res)
 
         print(type(res))
 

@@ -1,9 +1,13 @@
 import json
 from json import dumps
+
+from api.ai_logic.function_calls.resolvers.application import *
+from api.ai_logic.function_calls.resolvers.skill import *
 from common import database
 
 applications_collection = database["applications"]
 skills_collection = database["skills"]
+
 
 def execute_embedding_generation(client, input):
     # Embed a line of text
@@ -71,73 +75,24 @@ def execute_chat_completion(client, context, system_input, user_input):
 
 def handle_function_call(function_output, function_name):
 
-    # Function name
-    x = function_name
-    print(x)
-
     # Applications
-    if x == 'find_one_application_statement':
-        try:
-            print(function_output['find_clause'])
-            res = applications_collection.find_one(
-                function_output['find_clause'],
-                {'_id': 0, 'embeddings': 0, 'publish_date': 0}
-            )
-            print(res)
-            return res
-        except Exception as error:
-            print(error)
-            return "Sorry, I encountered an issue while trying to find that application."
-    elif x == 'find_many_application_statement':
-        try:
-            print(function_output['find_clause'])
-            res = applications_collection.find(
-                function_output['find_clause'],
-                {'_id': 0, 'embeddings': 0, 'publish_date': 0}
-            ).sort({'publish_date': -1}).limit(100)
-            res_arr = []
-            for app in res:
-                res_arr.append(app)
-            print(res_arr)
-            return res_arr
-        except Exception as error:
-            print(error)
-            return "Sorry, I encountered an issue while trying to find that application."
-    elif x == 'create_application_statement':
-        try:
-            res = applications_collection.insert_one(
-                function_output['insert_clause']
-            )
-            print(res)
-            return "Application created successfully!"
-        except Exception as error:
-            print(error)
-            return "Sorry, I encountered an issue while trying to create that application."
-    elif x == 'update_application_statement':
-        try:
-            res = applications_collection.update_one(
-                function_output['find_clause'],
-                {'$set': function_output['set_clause']},
-                upsert=True
-            )
-            print(res)
-            return "Application updated successfully!"
-        except Exception as error:
-            print(error)
-            return "Sorry, I encountered an issue while trying to update that application."
-    elif x == 'delete_application_statement':
-        res = 'No, I cannot delete applications.'
-        print(res)
-        return res
+    if function_name == 'find_one_application_statement':
+        return resolve_find_one_application_statement(function_output)
+    elif function_name == 'find_many_application_statement':
+        return resolve_find_many_application_statement(function_output)
+    elif function_name == 'create_application_statement':
+        return resolve_create_application_statement(function_output)
+    elif function_name == 'update_application_statement':
+        return resolve_update_application_statement(function_output)
+    elif function_name == 'delete_application_statement':
+        return resolve_delete_application_statement()
 
     # Skills
-    elif x == 'find_skill_statement':
-        res = skills_collection.find_one(
-            function_output['find_clause']
-        )
-        print(res)
-        return res
+    elif function_name == 'find_one_skill_statement':
+        return resolve_find_one_skill_statement(function_output)
+    elif function_name == 'find_many_skill_statement':
+        return resolve_find_many_skill_statement(function_output)
+
+    # Default
     else:
-        res = 'Function name not found.'
-        print(res)
-        return res
+        return 'Function name not found.'
