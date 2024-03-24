@@ -5,8 +5,10 @@ skills_collection = database["skills"]
 
 def resolve_find_one_skill_statement(func_output):
     try:
+        print(func_output['find_clause'])
         res = skills_collection.find_one(
-            func_output['find_clause']
+            func_output['find_clause'],
+            {'_id': 0}
         )
         print(res)
         return res
