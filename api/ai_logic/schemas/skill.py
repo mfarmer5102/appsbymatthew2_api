@@ -16,14 +16,16 @@ skill_schema = {
         'description': 'The type of skill in uppercase with no spaces.',
         'enum': skill_types_collection.distinct('code'),
     },
+    'is_featured': {
+        'type': 'boolean',
+        'description': 'Whether or not proficiency in the skill can be claimed.'
+    },
     'is_proficient': {
         'type': 'boolean',
-        'description': 'Whether or not proficiency in the skill can be claimed.',
-        'default': False
+        'description': 'Whether or not proficiency in the skill can be claimed.'
     },
     'is_visible_in_app_details': {
         'type': 'boolean',
-        'description': 'Whether or not the skill should be visible in the details of an application.',
-        'default': False
+        'description': 'Whether or not the skill should be visible in the details of an application.'
     }
 }

@@ -26,14 +26,12 @@ application_schema = {
     },
     'is_featured': {
         'type': 'boolean',
-        'description': 'Whether or not the application is featured.',
-        "default": False
+        'description': 'Whether or not the application is featured.'
     },
     'support_status_code': {
         'type': 'string',
         'description': 'The current support status of the application.',
-        'enum': support_status_collection.distinct('code'),
-        "default": "ACTIVE"
+        'enum': support_status_collection.distinct('code')
     },
     'associated_skill_codes': {
         'type': 'array',
