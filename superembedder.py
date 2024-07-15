@@ -6,7 +6,6 @@ applicationsCollection = database["applications"]
 
 
 def generate_embedding(user_input):
-
     client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
     # Embed a line of text
@@ -18,8 +17,10 @@ def generate_embedding(user_input):
     embedding = response.data[0].embedding
     return embedding
 
+
 def upsert_embeddings(title, vector):
     applicationsCollection.update_one({'title': title}, {"$set": {'embeddings': vector}}, upsert=True)
+
 
 def loop_through():
     allApps = applicationsCollection.find()
@@ -41,5 +42,6 @@ def loop_through():
         upsert_embeddings(app['title'], vector)
 
     # print(generate_embedding(json_data[0]))
+
 
 loop_through()

@@ -10,9 +10,7 @@ import datetime
 
 # File Imports
 from common import *
-
-# Define collections
-applicationsCollection = database["applications"]
+from globals.mongo_coll_names import applications_coll
 
 # Define blueprint
 Applications = Blueprint('Applications', __name__)
@@ -21,7 +19,7 @@ Applications = Blueprint('Applications', __name__)
 
 @Applications.route("/api/applications/countall", methods=['GET'])
 def sendTotalAppCount():
-    dataset = applicationsCollection.find().count()
+    dataset = applications_coll.ref.find().count()
     return json_util.dumps(dataset)
 
 @Applications.route("/api/applications", methods=['GET'])
@@ -90,7 +88,7 @@ def processApplicationsRead():
             limitValue = int(providedLimit)
 
         # Make the DB Query
-        dataset = applicationsCollection.find(findObj).sort(sortArr).skip(skipValue).limit(limitValue)
+        dataset = applications_coll.ref.find(findObj).sort(sortArr).skip(skipValue).limit(limitValue)
         return jsonResponse(flattenMongoIds(dataset))
 
 @Applications.route("/api/applications", methods=['POST', 'PUT', 'DELETE'])
@@ -107,7 +105,7 @@ def processApplicationsWrite():
         try:
             x['publish_date'] = datetime.datetime.strptime(request.json['publish_date'], '%Y-%m-%d')
             x['is_featured'] = True if (request.json['is_featured'] == 'true' or request.json['is_featured'] == True) else False # Parse bool
-            applicationsCollection.insert_one(x)
+            applications_coll.ref.insert_one(x)
             return handleSuccessfulWriteRequest()
         
         # If data doesn't conform to validations, return error
@@ -125,7 +123,7 @@ def processApplicationsWrite():
             myRequestWithoutId['is_featured'] = True if (request.json['is_featured'] == 'true' or request.json['is_featured'] == True) else False # Parse bool
             del myRequestWithoutId['_id']
             del myRequestWithoutId['_idFlat']
-            applicationsCollection.replace_one(myQuery, myRequestWithoutId, upsert=True)
+            applications_coll.ref.replace_one(myQuery, myRequestWithoutId, upsert=True)
             return handleSuccessfulWriteRequest()
 
         # If data doesn't conform to validations, return error
@@ -135,5 +133,5 @@ def processApplicationsWrite():
 
     if request.method == 'DELETE':
 
-        applicationsCollection.delete_one({'_id': ObjectId(request.json['_id'])})
+        applications_coll.ref.delete_one({'_id': ObjectId(request.json['_id'])})
         return handleSuccessfulWriteRequest()
