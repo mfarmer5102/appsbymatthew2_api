@@ -18,9 +18,9 @@ port = int(os.environ.get("PORT", 5001))
 from apis.src.routes.ai import Ai
 from apis.src.routes.applications import Applications
 from apis.src.routes.skills import Skills
-from apis.src.routes.skillTypes import SkillTypes
-from apis.src.routes.supportStatuses import SupportStatuses
-from apis.src.routes.trafficReports import TrafficReports
+from apis.src.routes.skill_types import SkillTypes
+from apis.src.routes.support_statuses import SupportStatuses
+from apis.src.routes.traffic_reports import TrafficReports
 
 # Register route files
 app.register_blueprint(Ai)

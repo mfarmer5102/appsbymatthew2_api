@@ -17,9 +17,9 @@ TrafficReports = Blueprint('TrafficReports', __name__)
 @TrafficReports.route("/api/trafficReports", methods=['GET'])
 def process_traffic_reports_read():
     # User must be admin to pull any info
-    if not isAuthenticatedUser(request):
-        return handleUnauthenticatedRequest()
+    if not is_authenticated_user(request):
+        return handle_unauthenticated_request()
 
     if request.method == 'GET':
         dataset = trafficReportsCollection.find().sort([("report_end_date", pymongo.DESCENDING)])
-        return jsonResponse(flattenMongoIds(dataset))
+        return json_response(flatten_mongo_ids(dataset))

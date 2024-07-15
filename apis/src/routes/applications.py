@@ -84,14 +84,14 @@ def process_applications_read():
 
         # Make the DB Query
         dataset = applications_coll.ref.find(find_obj).sort(sort_arr).skip(skip_value).limit(limit_value)
-        return jsonResponse(flattenMongoIds(dataset))
+        return json_response(flatten_mongo_ids(dataset))
 
 
 @Applications.route("/api/applications", methods=['POST', 'PUT', 'DELETE'])
 def process_applications_write():
     # For write actions, authenticate the user
-    if not isAuthenticatedUser(request):
-        return handleUnauthenticatedRequest()
+    if not is_authenticated_user(request):
+        return handle_unauthenticated_request()
 
     if request.method == 'POST':
 
@@ -102,7 +102,7 @@ def process_applications_write():
             x['is_featured'] = True if (request.json['is_featured'] == 'true' or request.json[
                 'is_featured'] == True) else False  # Parse bool
             applications_coll.ref.insert_one(x)
-            return handleSuccessfulWriteRequest()
+            return handle_successful_write_request()
 
         # If data doesn't conform to validations, return error
         except Exception as e:
@@ -121,7 +121,7 @@ def process_applications_write():
             del my_request_without_id['_id']
             del my_request_without_id['_idFlat']
             applications_coll.ref.replace_one(my_query, my_request_without_id, upsert=True)
-            return handleSuccessfulWriteRequest()
+            return handle_successful_write_request()
 
         # If data doesn't conform to validations, return error
         except Exception as e:
@@ -130,4 +130,4 @@ def process_applications_write():
 
     if request.method == 'DELETE':
         applications_coll.ref.delete_one({'_id': ObjectId(request.json['_id'])})
-        return handleSuccessfulWriteRequest()
+        return handle_successful_write_request()

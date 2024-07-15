@@ -18,4 +18,4 @@ SupportStatuses = Blueprint('SupportStatuses', __name__)
 def process_skills_read():
     if request.method == 'GET':
         dataset = supportStatusesCollection.find().sort([("label", pymongo.ASCENDING), ("code", pymongo.ASCENDING)])
-        return jsonResponse(flattenMongoIds(dataset))
+        return json_response(flatten_mongo_ids(dataset))

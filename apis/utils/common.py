@@ -15,40 +15,40 @@ database = myclient["apps_by_matthew"]
 
 
 # Functions
-def bsonToJson(item):
+def bson_to_json(item):
     return json.loads(json_util.dumps(item))
 
 
-def jsonResponse(dataset):
+def json_response(dataset):
     arr = []
     for item in dataset:
-        arr.append(bsonToJson(item))
+        arr.append(bson_to_json(item))
     return json.dumps(arr)
 
 
-def flattenMongoIds(dataset):
-    formattedArr = []
+def flatten_mongo_ids(dataset):
+    formatted_arr = []
     for datum in dataset:
         datum["_idFlat"] = str(datum["_id"])
-        formattedArr.append(datum)
-    return formattedArr
+        formatted_arr.append(datum)
+    return formatted_arr
 
 
-def isAuthenticatedUser(request):
+def is_authenticated_user(request):
     if request.headers.get('user-token') != os.getenv('SECRET_TOKEN', 'mysecrettoken'):
         return False
     else:
         return True
 
 
-def handleUnauthenticatedRequest():
+def handle_unauthenticated_request():
     return jsonify(
         code=401,
         msg="Unauthorized"
     ), 401
 
 
-def handleSuccessfulWriteRequest():
+def handle_successful_write_request():
     return jsonify(
         code=200,
         msg="Success"

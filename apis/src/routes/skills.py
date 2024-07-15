@@ -18,14 +18,14 @@ Skills = Blueprint('Skills', __name__)
 def process_skills_read():
     if request.method == 'GET':
         dataset = skills_collection.find().sort([("type", pymongo.ASCENDING), ("name", pymongo.ASCENDING)])
-        return jsonResponse(flattenMongoIds(dataset))
+        return json_response(flatten_mongo_ids(dataset))
 
 
 @Skills.route("/api/skills", methods=['POST', 'PUT', 'DELETE'])
 def process_skills_write():
     # For write actions, authenticate the user
-    if not isAuthenticatedUser(request):
-        return handleUnauthenticatedRequest()
+    if not is_authenticated_user(request):
+        return handle_unauthenticated_request()
 
     if request.method == 'POST':
 
@@ -38,7 +38,7 @@ def process_skills_write():
                     'is_visible_in_app_details'] == True) else False  # Parse bool
 
             skills_collection.insert_one(my_request)
-            return handleSuccessfulWriteRequest()
+            return handle_successful_write_request()
 
         # If data doesn't conform to validations, return error
         except Exception as e:
@@ -59,7 +59,7 @@ def process_skills_write():
             del my_request_without_id['_id']
             del my_request_without_id['_idFlat']
             skills_collection.replace_one(my_query, my_request_without_id, upsert=True)
-            return handleSuccessfulWriteRequest()
+            return handle_successful_write_request()
 
         # If data doesn't conform to validations, return error
         except Exception as e:
@@ -68,7 +68,7 @@ def process_skills_write():
 
     if request.method == 'DELETE':
         skills_collection.delete_one({'_id': ObjectId(request.json['_id'])})
-        return handleSuccessfulWriteRequest()
+        return handle_successful_write_request()
 
 
 @Skills.route("/api/skills/one", methods=['GET'])
@@ -115,4 +115,4 @@ def send_filtered_keywords():
 
     # Make the DB Query
     dataset = skills_collection.find(find_obj).sort(sort_arr)
-    return jsonResponse(flattenMongoIds(dataset))
+    return json_response(flatten_mongo_ids(dataset))
