@@ -1,5 +1,5 @@
 from openai import OpenAI
-from common import *
+from apis.utils.common import *
 from bson.json_util import dumps
 
 applicationsCollection = database["applications"]

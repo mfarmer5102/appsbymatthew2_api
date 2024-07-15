@@ -13,15 +13,18 @@ import certifi
 myclient = pymongo.MongoClient(os.getenv('MONGO_INSTANCE_URL', "mongodb://localhost:27017"), tlsCAFile=certifi.where())
 database = myclient["apps_by_matthew"]
 
+
 # Functions
 def bsonToJson(item):
     return json.loads(json_util.dumps(item))
+
 
 def jsonResponse(dataset):
     arr = []
     for item in dataset:
         arr.append(bsonToJson(item))
     return json.dumps(arr)
+
 
 def flattenMongoIds(dataset):
     formattedArr = []
@@ -30,20 +33,23 @@ def flattenMongoIds(dataset):
         formattedArr.append(datum)
     return formattedArr
 
+
 def isAuthenticatedUser(request):
     if request.headers.get('user-token') != os.getenv('SECRET_TOKEN', 'mysecrettoken'):
         return False
     else:
         return True
-        
+
+
 def handleUnauthenticatedRequest():
     return jsonify(
         code=401,
         msg="Unauthorized"
     ), 401
 
+
 def handleSuccessfulWriteRequest():
     return jsonify(
-            code=200,
-            msg="Success"
-        )
+        code=200,
+        msg="Success"
+    )

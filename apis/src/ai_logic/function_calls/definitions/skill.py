@@ -1,4 +1,4 @@
-from api.ai_logic.schemas.skill import skill_schema
+from apis.src.ai_logic.schemas.skill import skill_schema
 
 func_find_one_skill_statement = {
     'name': 'find_one_skill_statement',

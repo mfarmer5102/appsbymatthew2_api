@@ -1,4 +1,4 @@
-from common import database
+from apis.utils.common import database
 
 applications_collection = database["applications"]
 
@@ -16,6 +16,7 @@ def resolve_find_one_application_statement(func_output):
         print(error)
         return "Sorry, I encountered an issue while trying to find that application."
 
+
 def resolve_find_many_application_statement(func_output):
     try:
         print(func_output['find_clause'])
@@ -32,6 +33,7 @@ def resolve_find_many_application_statement(func_output):
         print(error)
         return "Sorry, I encountered an issue while trying to find that application."
 
+
 def resolve_create_application_statement(func_output):
     try:
         res = applications_collection.insert_one(
@@ -42,6 +44,7 @@ def resolve_create_application_statement(func_output):
     except Exception as error:
         print(error)
         return "Sorry, I encountered an issue while trying to create that application."
+
 
 def resolve_update_application_statement(func_output):
     try:
@@ -55,6 +58,7 @@ def resolve_update_application_statement(func_output):
     except Exception as error:
         print(error)
         return "Sorry, I encountered an issue while trying to update that application."
+
 
 def resolve_delete_application_statement():
     res = 'No, I cannot delete applications.'

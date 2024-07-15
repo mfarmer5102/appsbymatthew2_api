@@ -1,4 +1,4 @@
-from api.ai_logic.schemas.application import application_schema
+from apis.src.ai_logic.schemas.application import application_schema
 
 func_find_one_application_statement = {
     'name': 'find_one_application_statement',

@@ -1,8 +1,8 @@
 import json
 
-from api.ai_logic.function_calls.resolvers.application import *
-from api.ai_logic.function_calls.resolvers.skill import *
-from common import database
+from apis.src.ai_logic.function_calls.resolvers.application import *
+from apis.src.ai_logic.function_calls.resolvers.skill import *
+from apis.utils.common import database
 
 applications_collection = database["applications"]
 skills_collection = database["skills"]

@@ -1,9 +1,9 @@
 from openai import OpenAI
 
-from api.ai_logic.function_calls.index import defined_functions
-from api.ai_logic.utils import execute_embedding_generation, execute_embedding_search, execute_function_call, \
+from apis.src.ai_logic.function_calls.index import defined_functions
+from apis.src.ai_logic.utils import execute_embedding_generation, execute_embedding_search, execute_function_call, \
     execute_chat_completion, handle_function_call
-from common import *
+from apis.utils.common import *
 
 # Define blueprint
 Ai = Blueprint('Ai', __name__)
@@ -38,7 +38,7 @@ def search_embeddings_endpoint():
         return {"text": elaboration}
 
 
-# @Ai.route("/api/ai/functionCalls", methods=['GET'])
+# @Ai.route("/apis/ai/functionCalls", methods=['GET'])
 # def do_function_calls_endpoint():
 #     if request.method == 'GET':
 #

@@ -1,19 +1,14 @@
 # General imports
-from flask import Flask, Blueprint, request, jsonify, Response
-import os
 
 # MongoDB specific imports
-import pymongo
-from bson import json_util, ObjectId
-import json
-import datetime
 
 # File Imports
-from common import *
-from globals.mongo_coll_names import applications_coll
+from apis.utils.common import *
+from apis.globals.mongo_coll_names import applications_coll
 
 # Define blueprint
 Applications = Blueprint('Applications', __name__)
+
 
 # Begin routes
 
@@ -22,9 +17,9 @@ def sendTotalAppCount():
     dataset = applications_coll.ref.find().count()
     return json_util.dumps(dataset)
 
+
 @Applications.route("/api/applications", methods=['GET'])
 def processApplicationsRead():
-
     if request.method == 'GET':
 
         # Initialize the find object
@@ -48,33 +43,33 @@ def processApplicationsRead():
         # Title
         suppliedTitle = request.args.get("title")
         if suppliedTitle is not None:
-            findObj["title"] = {"$regex": suppliedTitle, '$options' : 'i'}
+            findObj["title"] = {"$regex": suppliedTitle, '$options': 'i'}
 
         # Utilized Skills
         skills = request.args.get("skills")
         if skills is not None:
             parsedSkillCodes = skills.split(',')
             findObj["associated_skill_codes"] = {"$in": parsedSkillCodes}
-        
+
         # Deployment Status
         isDeployed = request.args.get("deployed")
         if isDeployed is not None:
             findObj["deployed_link"] = {"$ne": None}
 
-
         # Initialize the sort array
         sortArr = []
-        
+
         # Date
         sortDate = request.args.get("sortDate")
         if sortDate is not None:
-            sortArr.append(("publish_date", pymongo.DESCENDING if request.args.get("sortDate") == "desc" else pymongo.ASCENDING))
+            sortArr.append(
+                ("publish_date", pymongo.DESCENDING if request.args.get("sortDate") == "desc" else pymongo.ASCENDING))
 
         # Default
-        if not sortArr: # Mongo query won't work if the sort array is empty, so give it something to sort on
+        if not sortArr:  # Mongo query won't work if the sort array is empty, so give it something to sort on
             sortArr.append(("is_featured", pymongo.DESCENDING))
             sortArr.append(("publish_date", pymongo.DESCENDING))
-        
+
         # Skip
         providedSkip = request.args.get("skip")
         skipValue = 0
@@ -91,11 +86,11 @@ def processApplicationsRead():
         dataset = applications_coll.ref.find(findObj).sort(sortArr).skip(skipValue).limit(limitValue)
         return jsonResponse(flattenMongoIds(dataset))
 
+
 @Applications.route("/api/applications", methods=['POST', 'PUT', 'DELETE'])
 def processApplicationsWrite():
-
     # For write actions, authenticate the user
-    if not isAuthenticatedUser(request): 
+    if not isAuthenticatedUser(request):
         return handleUnauthenticatedRequest()
 
     if request.method == 'POST':
@@ -104,14 +99,15 @@ def processApplicationsWrite():
 
         try:
             x['publish_date'] = datetime.datetime.strptime(request.json['publish_date'], '%Y-%m-%d')
-            x['is_featured'] = True if (request.json['is_featured'] == 'true' or request.json['is_featured'] == True) else False # Parse bool
+            x['is_featured'] = True if (request.json['is_featured'] == 'true' or request.json[
+                'is_featured'] == True) else False  # Parse bool
             applications_coll.ref.insert_one(x)
             return handleSuccessfulWriteRequest()
-        
+
         # If data doesn't conform to validations, return error
         except Exception as e:
             print(e)
-            return Response(status = 415)
+            return Response(status=415)
 
     if request.method == 'PUT':
 
@@ -120,7 +116,8 @@ def processApplicationsWrite():
             myQuery = {'_id': ObjectId(incomingId['$oid'])}
             myRequestWithoutId = request.json
             myRequestWithoutId['publish_date'] = datetime.datetime.strptime(request.json['publish_date'], '%Y-%m-%d')
-            myRequestWithoutId['is_featured'] = True if (request.json['is_featured'] == 'true' or request.json['is_featured'] == True) else False # Parse bool
+            myRequestWithoutId['is_featured'] = True if (request.json['is_featured'] == 'true' or request.json[
+                'is_featured'] == True) else False  # Parse bool
             del myRequestWithoutId['_id']
             del myRequestWithoutId['_idFlat']
             applications_coll.ref.replace_one(myQuery, myRequestWithoutId, upsert=True)
@@ -129,9 +126,8 @@ def processApplicationsWrite():
         # If data doesn't conform to validations, return error
         except Exception as e:
             print(e)
-            return Response(status = 415)
+            return Response(status=415)
 
     if request.method == 'DELETE':
-
         applications_coll.ref.delete_one({'_id': ObjectId(request.json['_id'])})
         return handleSuccessfulWriteRequest()

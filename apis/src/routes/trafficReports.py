@@ -1,11 +1,9 @@
 # General imports
-from flask import Flask, Blueprint, request, jsonify
 
 # MongoDB specific imports
-import pymongo
 
 # File Imports
-from common import *
+from apis.utils.common import *
 
 # Define collections
 trafficReportsCollection = database["traffic_reports"]
@@ -13,13 +11,13 @@ trafficReportsCollection = database["traffic_reports"]
 # Define blueprint
 TrafficReports = Blueprint('TrafficReports', __name__)
 
+
 # Begin routes
 
 @TrafficReports.route("/api/trafficReports", methods=['GET'])
 def processTrafficReportsRead():
-
     # User must be admin to pull any info
-    if not isAuthenticatedUser(request): 
+    if not isAuthenticatedUser(request):
         return handleUnauthenticatedRequest()
 
     if request.method == 'GET':

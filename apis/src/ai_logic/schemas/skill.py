@@ -1,4 +1,4 @@
-from common import database
+from apis.utils.common import database
 
 skill_types_collection = database['skill_types']
 
