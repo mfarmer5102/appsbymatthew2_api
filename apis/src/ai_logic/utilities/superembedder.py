@@ -2,7 +2,7 @@ from openai import OpenAI
 from apis.utils.common import *
 from bson.json_util import dumps
 
-applicationsCollection = database["applications"]
+applications_collection = database["applications"]
 
 
 def generate_embedding(user_input):
@@ -19,13 +19,13 @@ def generate_embedding(user_input):
 
 
 def upsert_embeddings(title, vector):
-    applicationsCollection.update_one({'title': title}, {"$set": {'embeddings': vector}}, upsert=True)
+    applications_collection.update_one({'title': title}, {"$set": {'embeddings': vector}}, upsert=True)
 
 
 def loop_through():
-    allApps = applicationsCollection.find()
+    all_apps = applications_collection.find()
 
-    json_data = json.loads(dumps(allApps))
+    json_data = json.loads(dumps(all_apps))
     for app in json_data:
         del app['_id']
         del app['publish_date']

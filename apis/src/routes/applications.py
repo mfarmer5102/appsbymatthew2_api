@@ -13,82 +13,82 @@ Applications = Blueprint('Applications', __name__)
 # Begin routes
 
 @Applications.route("/api/applications/countall", methods=['GET'])
-def sendTotalAppCount():
+def send_total_app_count():
     dataset = applications_coll.ref.find().count()
     return json_util.dumps(dataset)
 
 
 @Applications.route("/api/applications", methods=['GET'])
-def processApplicationsRead():
+def process_applications_read():
     if request.method == 'GET':
 
         # Initialize the find object
-        findObj = {}
+        find_obj = {}
 
         # Application Document ID
-        suppliedId = request.args.get("applicationId")
-        if suppliedId is not None:
-            findObj["_id"] = ObjectId(suppliedId)
+        supplied_id = request.args.get("applicationId")
+        if supplied_id is not None:
+            find_obj["_id"] = ObjectId(supplied_id)
 
         # Featured
-        isFeatured = request.args.get("featured")
-        if isFeatured is not None:
-            findObj["is_featured"] = request.args.get("featured") == "true"
+        is_featured = request.args.get("featured")
+        if is_featured is not None:
+            find_obj["is_featured"] = request.args.get("featured") == "true"
 
         # Support Status
-        supportStatusCode = request.args.get("supportStatus")
-        if supportStatusCode is not None:
-            findObj["support_status_code"] = supportStatusCode
+        support_status_code = request.args.get("supportStatus")
+        if support_status_code is not None:
+            find_obj["support_status_code"] = support_status_code
 
         # Title
-        suppliedTitle = request.args.get("title")
-        if suppliedTitle is not None:
-            findObj["title"] = {"$regex": suppliedTitle, '$options': 'i'}
+        supplied_title = request.args.get("title")
+        if supplied_title is not None:
+            find_obj["title"] = {"$regex": supplied_title, '$options': 'i'}
 
         # Utilized Skills
         skills = request.args.get("skills")
         if skills is not None:
-            parsedSkillCodes = skills.split(',')
-            findObj["associated_skill_codes"] = {"$in": parsedSkillCodes}
+            parsed_skill_codes = skills.split(',')
+            find_obj["associated_skill_codes"] = {"$in": parsed_skill_codes}
 
         # Deployment Status
-        isDeployed = request.args.get("deployed")
-        if isDeployed is not None:
-            findObj["deployed_link"] = {"$ne": None}
+        is_deployed = request.args.get("deployed")
+        if is_deployed is not None:
+            find_obj["deployed_link"] = {"$ne": None}
 
         # Initialize the sort array
-        sortArr = []
+        sort_arr = []
 
         # Date
-        sortDate = request.args.get("sortDate")
-        if sortDate is not None:
-            sortArr.append(
+        sort_date = request.args.get("sortDate")
+        if sort_date is not None:
+            sort_arr.append(
                 ("publish_date", pymongo.DESCENDING if request.args.get("sortDate") == "desc" else pymongo.ASCENDING))
 
         # Default
-        if not sortArr:  # Mongo query won't work if the sort array is empty, so give it something to sort on
-            sortArr.append(("is_featured", pymongo.DESCENDING))
-            sortArr.append(("publish_date", pymongo.DESCENDING))
+        if not sort_arr:  # Mongo query won't work if the sort array is empty, so give it something to sort on
+            sort_arr.append(("is_featured", pymongo.DESCENDING))
+            sort_arr.append(("publish_date", pymongo.DESCENDING))
 
         # Skip
-        providedSkip = request.args.get("skip")
-        skipValue = 0
-        if providedSkip is not None:
-            skipValue = int(providedSkip)
+        provided_skip = request.args.get("skip")
+        skip_value = 0
+        if provided_skip is not None:
+            skip_value = int(provided_skip)
 
         #Limit
-        providedLimit = request.args.get("limit")
-        limitValue = 0
-        if providedLimit is not None:
-            limitValue = int(providedLimit)
+        provided_limit = request.args.get("limit")
+        limit_value = 0
+        if provided_limit is not None:
+            limit_value = int(provided_limit)
 
         # Make the DB Query
-        dataset = applications_coll.ref.find(findObj).sort(sortArr).skip(skipValue).limit(limitValue)
+        dataset = applications_coll.ref.find(find_obj).sort(sort_arr).skip(skip_value).limit(limit_value)
         return jsonResponse(flattenMongoIds(dataset))
 
 
 @Applications.route("/api/applications", methods=['POST', 'PUT', 'DELETE'])
-def processApplicationsWrite():
+def process_applications_write():
     # For write actions, authenticate the user
     if not isAuthenticatedUser(request):
         return handleUnauthenticatedRequest()
@@ -112,15 +112,15 @@ def processApplicationsWrite():
     if request.method == 'PUT':
 
         try:
-            incomingId = request.json['_id']
-            myQuery = {'_id': ObjectId(incomingId['$oid'])}
-            myRequestWithoutId = request.json
-            myRequestWithoutId['publish_date'] = datetime.datetime.strptime(request.json['publish_date'], '%Y-%m-%d')
-            myRequestWithoutId['is_featured'] = True if (request.json['is_featured'] == 'true' or request.json[
+            incoming_id = request.json['_id']
+            my_query = {'_id': ObjectId(incoming_id['$oid'])}
+            my_request_without_id = request.json
+            my_request_without_id['publish_date'] = datetime.datetime.strptime(request.json['publish_date'], '%Y-%m-%d')
+            my_request_without_id['is_featured'] = True if (request.json['is_featured'] == 'true' or request.json[
                 'is_featured'] == True) else False  # Parse bool
-            del myRequestWithoutId['_id']
-            del myRequestWithoutId['_idFlat']
-            applications_coll.ref.replace_one(myQuery, myRequestWithoutId, upsert=True)
+            del my_request_without_id['_id']
+            del my_request_without_id['_idFlat']
+            applications_coll.ref.replace_one(my_query, my_request_without_id, upsert=True)
             return handleSuccessfulWriteRequest()
 
         # If data doesn't conform to validations, return error

@@ -15,7 +15,7 @@ SupportStatuses = Blueprint('SupportStatuses', __name__)
 # Begin routes
 
 @SupportStatuses.route("/api/supportStatuses", methods=['GET'])
-def processSkillsRead():
+def process_skills_read():
     if request.method == 'GET':
         dataset = supportStatusesCollection.find().sort([("label", pymongo.ASCENDING), ("code", pymongo.ASCENDING)])
         return jsonResponse(flattenMongoIds(dataset))

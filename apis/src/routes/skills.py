@@ -6,7 +6,7 @@
 from apis.utils.common import *
 
 # Define collections
-skillsCollection = database["skills"]
+skills_collection = database["skills"]
 
 # Define blueprint
 Skills = Blueprint('Skills', __name__)
@@ -15,14 +15,14 @@ Skills = Blueprint('Skills', __name__)
 # Begin routes
 
 @Skills.route("/api/skills", methods=['GET'])
-def processSkillsRead():
+def process_skills_read():
     if request.method == 'GET':
-        dataset = skillsCollection.find().sort([("type", pymongo.ASCENDING), ("name", pymongo.ASCENDING)])
+        dataset = skills_collection.find().sort([("type", pymongo.ASCENDING), ("name", pymongo.ASCENDING)])
         return jsonResponse(flattenMongoIds(dataset))
 
 
 @Skills.route("/api/skills", methods=['POST', 'PUT', 'DELETE'])
-def processSkillsWrite():
+def process_skills_write():
     # For write actions, authenticate the user
     if not isAuthenticatedUser(request):
         return handleUnauthenticatedRequest()
@@ -30,14 +30,14 @@ def processSkillsWrite():
     if request.method == 'POST':
 
         try:
-            myRequest = request.json
-            myRequest['is_proficient'] = True if (request.json['is_proficient'] == 'true' or request.json[
+            my_request = request.json
+            my_request['is_proficient'] = True if (request.json['is_proficient'] == 'true' or request.json[
                 'is_proficient'] == True) else False  # Parse bool
-            myRequest['is_visible_in_app_details'] = True if (
+            my_request['is_visible_in_app_details'] = True if (
                         request.json['is_visible_in_app_details'] == 'true' or request.json[
                     'is_visible_in_app_details'] == True) else False  # Parse bool
 
-            skillsCollection.insert_one(myRequest)
+            skills_collection.insert_one(my_request)
             return handleSuccessfulWriteRequest()
 
         # If data doesn't conform to validations, return error
@@ -48,17 +48,17 @@ def processSkillsWrite():
     if request.method == 'PUT':
 
         try:
-            incomingId = request.json['_id']
-            myQuery = {'_id': ObjectId(incomingId['$oid'])}
-            myRequestWithoutId = request.json
-            myRequestWithoutId['is_proficient'] = True if (request.json['is_proficient'] == 'true' or request.json[
+            incoming_id = request.json['_id']
+            my_query = {'_id': ObjectId(incoming_id['$oid'])}
+            my_request_without_id = request.json
+            my_request_without_id['is_proficient'] = True if (request.json['is_proficient'] == 'true' or request.json[
                 'is_proficient'] == True) else False  #Parse bool
-            myRequestWithoutId['is_visible_in_app_details'] = True if (
+            my_request_without_id['is_visible_in_app_details'] = True if (
                         request.json['is_visible_in_app_details'] == 'true' or request.json[
                     'is_visible_in_app_details'] == True) else False  # Parse bool
-            del myRequestWithoutId['_id']
-            del myRequestWithoutId['_idFlat']
-            skillsCollection.replace_one(myQuery, myRequestWithoutId, upsert=True)
+            del my_request_without_id['_id']
+            del my_request_without_id['_idFlat']
+            skills_collection.replace_one(my_query, my_request_without_id, upsert=True)
             return handleSuccessfulWriteRequest()
 
         # If data doesn't conform to validations, return error
@@ -67,52 +67,52 @@ def processSkillsWrite():
             return Response(status=415)
 
     if request.method == 'DELETE':
-        skillsCollection.delete_one({'_id': ObjectId(request.json['_id'])})
+        skills_collection.delete_one({'_id': ObjectId(request.json['_id'])})
         return handleSuccessfulWriteRequest()
 
 
 @Skills.route("/api/skills/one", methods=['GET'])
-def sendFilteredKeywords():
+def send_filtered_keywords():
     # Initialize the find object
-    findObj = {}
+    find_obj = {}
 
     # Document ID
-    suppliedId = request.args.get("id")
-    if suppliedId is not None:
-        findObj["_id"] = ObjectId(suppliedId)
+    supplied_id = request.args.get("id")
+    if supplied_id is not None:
+        find_obj["_id"] = ObjectId(supplied_id)
 
     # Skill Code
-    suppliedCode = request.args.get("skillCode")
-    if suppliedCode is not None:
-        findObj["code"] = suppliedCode
+    supplied_code = request.args.get("skillCode")
+    if supplied_code is not None:
+        find_obj["code"] = supplied_code
 
     # Demonstrable
-    isDemonstrable = request.args.get("demonstrable")
-    if isDemonstrable is not None:
-        findObj["showOnPortfolio"] = request.args.get("demonstrable") == "true"
+    is_demonstrable = request.args.get("demonstrable")
+    if is_demonstrable is not None:
+        find_obj["showOnPortfolio"] = request.args.get("demonstrable") == "true"
 
     # Proficient
-    isProficient = request.args.get("proficient")
-    if isProficient is not None:
-        findObj["showInGallery"] = request.args.get("proficient") == "true"
+    is_proficient = request.args.get("proficient")
+    if is_proficient is not None:
+        find_obj["showInGallery"] = request.args.get("proficient") == "true"
 
     # Initialize the sort array
-    sortArr = []
+    sort_arr = []
 
     # Name
-    sortName = request.args.get("sortName")
-    if sortName is not None:
-        sortArr.append(("name", pymongo.ASCENDING if request.args.get("sortName") == "asc" else pymongo.DESCENDING))
+    sort_name = request.args.get("sortName")
+    if sort_name is not None:
+        sort_arr.append(("name", pymongo.ASCENDING if request.args.get("sortName") == "asc" else pymongo.DESCENDING))
 
     # Type
-    sortType = request.args.get("sortType")
-    if sortType is not None:
-        sortArr.append(("type", pymongo.ASCENDING if request.args.get("sortName") == "asc" else pymongo.DESCENDING))
+    sort_type = request.args.get("sortType")
+    if sort_type is not None:
+        sort_arr.append(("type", pymongo.ASCENDING if request.args.get("sortName") == "asc" else pymongo.DESCENDING))
 
     # Default
-    if not sortArr:  # Mongo query won't work if the sort array is empty, so give it something to sort on
-        sortArr.append(("name", pymongo.ASCENDING))
+    if not sort_arr:  # Mongo query won't work if the sort array is empty, so give it something to sort on
+        sort_arr.append(("name", pymongo.ASCENDING))
 
     # Make the DB Query
-    dataset = skillsCollection.find(findObj).sort(sortArr)
+    dataset = skills_collection.find(find_obj).sort(sort_arr)
     return jsonResponse(flattenMongoIds(dataset))

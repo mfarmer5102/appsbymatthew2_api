@@ -15,7 +15,7 @@ TrafficReports = Blueprint('TrafficReports', __name__)
 # Begin routes
 
 @TrafficReports.route("/api/trafficReports", methods=['GET'])
-def processTrafficReportsRead():
+def process_traffic_reports_read():
     # User must be admin to pull any info
     if not isAuthenticatedUser(request):
         return handleUnauthenticatedRequest()

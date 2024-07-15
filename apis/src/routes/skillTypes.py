@@ -15,7 +15,7 @@ SkillTypes = Blueprint('SkillTypes', __name__)
 # Begin routes
 
 @SkillTypes.route("/api/skillTypes", methods=['GET'])
-def processSkillsRead():
+def process_skills_read():
     if request.method == 'GET':
         dataset = skillTypesCollection.find().sort([("label", pymongo.ASCENDING), ("code", pymongo.ASCENDING)])
         return jsonResponse(flattenMongoIds(dataset))
