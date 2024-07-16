@@ -1,12 +1,5 @@
-# General imports
-
-# MongoDB specific imports
-
-# File Imports
 from apis.utils.common import *
-
-# Define collections
-supportStatusesCollection = database["support_statuses"]
+from apis.globals.mongo_coll_names import support_statuses_coll
 
 # Define blueprint
 SupportStatuses = Blueprint('SupportStatuses', __name__)
@@ -17,5 +10,5 @@ SupportStatuses = Blueprint('SupportStatuses', __name__)
 @SupportStatuses.route("/api/supportStatuses", methods=['GET'])
 def process_skills_read():
     if request.method == 'GET':
-        dataset = supportStatusesCollection.find().sort([("label", pymongo.ASCENDING), ("code", pymongo.ASCENDING)])
+        dataset = support_statuses_coll.ref.find().sort([("label", pymongo.ASCENDING), ("code", pymongo.ASCENDING)])
         return json_response(flatten_mongo_ids(dataset))

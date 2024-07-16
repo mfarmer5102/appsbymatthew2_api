@@ -1,16 +1,9 @@
-# General imports
-
-# MongoDB specific imports
-
-# File Imports
 from apis.utils.common import *
 from apis.globals.mongo_coll_names import applications_coll
 
 # Define blueprint
 Applications = Blueprint('Applications', __name__)
 
-
-# Begin routes
 
 @Applications.route("/api/applications/countall", methods=['GET'])
 def send_total_app_count():
@@ -83,7 +76,11 @@ def process_applications_read():
             limit_value = int(provided_limit)
 
         # Make the DB Query
-        dataset = applications_coll.ref.find(find_obj).sort(sort_arr).skip(skip_value).limit(limit_value)
+        dataset = applications_coll.ref \
+            .find(find_obj, {"embeddings": 0}) \
+            .sort(sort_arr).skip(skip_value) \
+            .limit(limit_value)
+
         return json_response(flatten_mongo_ids(dataset))
 
 

@@ -1,23 +1,14 @@
-# General imports
-
-# MongoDB specific imports
-
-# File Imports
 from apis.utils.common import *
-
-# Define collections
-skills_collection = database["skills"]
+from apis.globals.mongo_coll_names import skills_coll
 
 # Define blueprint
 Skills = Blueprint('Skills', __name__)
 
 
-# Begin routes
-
 @Skills.route("/api/skills", methods=['GET'])
 def process_skills_read():
     if request.method == 'GET':
-        dataset = skills_collection.find().sort([("type", pymongo.ASCENDING), ("name", pymongo.ASCENDING)])
+        dataset = skills_coll.ref.find().sort([("type", pymongo.ASCENDING), ("name", pymongo.ASCENDING)])
         return json_response(flatten_mongo_ids(dataset))
 
 
@@ -37,7 +28,7 @@ def process_skills_write():
                         request.json['is_visible_in_app_details'] == 'true' or request.json[
                     'is_visible_in_app_details'] == True) else False  # Parse bool
 
-            skills_collection.insert_one(my_request)
+            skills_coll.ref.insert_one(my_request)
             return handle_successful_write_request()
 
         # If data doesn't conform to validations, return error
@@ -58,7 +49,7 @@ def process_skills_write():
                     'is_visible_in_app_details'] == True) else False  # Parse bool
             del my_request_without_id['_id']
             del my_request_without_id['_idFlat']
-            skills_collection.replace_one(my_query, my_request_without_id, upsert=True)
+            skills_coll.ref.replace_one(my_query, my_request_without_id, upsert=True)
             return handle_successful_write_request()
 
         # If data doesn't conform to validations, return error
@@ -67,7 +58,7 @@ def process_skills_write():
             return Response(status=415)
 
     if request.method == 'DELETE':
-        skills_collection.delete_one({'_id': ObjectId(request.json['_id'])})
+        skills_coll.ref.delete_one({'_id': ObjectId(request.json['_id'])})
         return handle_successful_write_request()
 
 
@@ -114,5 +105,5 @@ def send_filtered_keywords():
         sort_arr.append(("name", pymongo.ASCENDING))
 
     # Make the DB Query
-    dataset = skills_collection.find(find_obj).sort(sort_arr)
+    dataset = skills_coll.ref.find(find_obj).sort(sort_arr)
     return json_response(flatten_mongo_ids(dataset))

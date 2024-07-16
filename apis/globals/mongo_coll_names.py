@@ -43,3 +43,6 @@ users_coll = MongoColl(verdantime_db, 'users')
 # apps_by_matthew DB
 apps_by_matthew_db = "apps_by_matthew"
 applications_coll = MongoColl(apps_by_matthew_db, 'applications')
+skills_coll = MongoColl(apps_by_matthew_db, 'skills')
+skill_types_coll = MongoColl(apps_by_matthew_db, 'skill_types')
+support_statuses_coll = MongoColl(apps_by_matthew_db, 'support_statuses')

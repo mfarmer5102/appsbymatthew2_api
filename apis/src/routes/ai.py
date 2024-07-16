@@ -1,5 +1,4 @@
 from openai import OpenAI
-
 from apis.src.ai_logic.function_calls.index import defined_functions
 from apis.src.ai_logic.utils import execute_embedding_generation, execute_embedding_search, execute_function_call, \
     execute_chat_completion, handle_function_call
@@ -37,24 +36,6 @@ def search_embeddings_endpoint():
 
         return {"text": elaboration}
 
-
-# @Ai.route("/apis/ai/functionCalls", methods=['GET'])
-# def do_function_calls_endpoint():
-#     if request.method == 'GET':
-#
-#         user_input = request.args.get("text")
-#         prompt = f""" Please extract information from the following and return it as a JSON object: {user_input}"""
-#
-#         x = execute_function_call(client, prompt, application_functions)
-#
-#         try:
-#             x['title'] = x['title'].title()
-#         except:
-#             print("couldn't apply title casing to title")
-#
-#         print(x)
-#
-#         return {"text": x}
 
 @Ai.route("/api/ai/genericFunctionCall", methods=['GET'])
 def do_generic_function_call_endpoint():
