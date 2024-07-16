@@ -8,7 +8,7 @@ import os
 # Define app variable
 app = Flask(__name__)
 
-# Allow cross origin requests
+# Allow cross-origin requests
 CORS(app)
 
 # Define port on which to listen

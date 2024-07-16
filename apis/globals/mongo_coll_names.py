@@ -1,4 +1,4 @@
-from apis.utils.common import myclient as mongo_client
+from apis.utils.common import my_client as mongo_client
 
 
 class MongoColl:
