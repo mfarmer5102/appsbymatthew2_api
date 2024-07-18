@@ -8,7 +8,7 @@ Skills = Blueprint('Skills', __name__)
 @Skills.route("/api/skills", methods=['GET'])
 def process_skills_read():
     if request.method == 'GET':
-        dataset = skills_coll.ref.find().sort([("type", pymongo.ASCENDING), ("name", pymongo.ASCENDING)])
+        dataset = skills_coll.ref.find({"is_hidden": {"$ne": True}}).sort([("type", pymongo.ASCENDING), ("name", pymongo.ASCENDING)])
         return json_response(flatten_mongo_ids(dataset))
 
 
