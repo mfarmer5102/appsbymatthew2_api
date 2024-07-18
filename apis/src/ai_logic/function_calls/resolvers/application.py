@@ -19,7 +19,6 @@ def resolve_find_one_application_statement(func_output):
 
 def resolve_find_many_application_statement(func_output):
     try:
-        print(func_output['find_clause'])
         res = applications_collection.find(
             func_output['find_clause'],
             {'_id': 0, 'embeddings': 0, 'publish_date': 0}
@@ -27,7 +26,6 @@ def resolve_find_many_application_statement(func_output):
         res_arr = []
         for app in res:
             res_arr.append(app)
-        print(res_arr)
         return res_arr
     except Exception as error:
         print(error)
@@ -39,7 +37,6 @@ def resolve_create_application_statement(func_output):
         res = applications_collection.insert_one(
             func_output['insert_clause']
         )
-        print(res)
         return "Application created successfully!"
     except Exception as error:
         print(error)
@@ -53,7 +50,6 @@ def resolve_update_application_statement(func_output):
             {'$set': func_output['set_clause']},
             upsert=True
         )
-        print(res)
         return "Application updated successfully!"
     except Exception as error:
         print(error)
@@ -62,5 +58,4 @@ def resolve_update_application_statement(func_output):
 
 def resolve_delete_application_statement():
     res = 'No, I cannot delete applications.'
-    print(res)
     return res

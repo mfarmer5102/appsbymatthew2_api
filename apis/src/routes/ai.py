@@ -44,17 +44,11 @@ def do_generic_function_call_endpoint():
         user_input = request.args.get("text")
         x, y = execute_function_call(client, user_input, defined_functions)
 
-        print(x, y)
         res = handle_function_call(x, y)
-        print('*****', res)
-
-        print(type(res))
 
         built_reply = {
             'data': res,
             'function_name': y
         }
-
-        print(built_reply)
 
         return json.dumps(built_reply)
