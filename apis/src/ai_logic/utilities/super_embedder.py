@@ -32,16 +32,10 @@ def loop_through():
         try:
             del app['embeddings']
         except:
-            print('no embeddings to delete')
+            print('No embeddings to delete')
         app['associated_skill_codes'] = ', '.join(app['associated_skill_codes'])
-        print(app)
         stringy = json.dumps(app, separators=(',', ':'))
-        print(stringy)
         vector = generate_embedding(stringy)
-        print(app['title'])
         upsert_embeddings(app['title'], vector)
-
-    # print(generate_embedding(json_data[0]))
-
 
 loop_through()
