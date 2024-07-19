@@ -1,8 +1,10 @@
+from flask import Blueprint, request
 from openai import OpenAI
 from apis.src.ai_logic.function_calls.index import defined_functions
 from apis.src.ai_logic.utils import execute_embedding_generation, execute_embedding_search, execute_function_call, \
     execute_chat_completion, handle_function_call
 from apis.utils.common import *
+from apis.utils.mongo_connection import database
 
 # Define blueprint
 Ai = Blueprint('Ai', __name__)

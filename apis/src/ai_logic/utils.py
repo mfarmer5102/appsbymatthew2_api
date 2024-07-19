@@ -2,7 +2,7 @@ import json
 
 from apis.src.ai_logic.function_calls.resolvers.application import *
 from apis.src.ai_logic.function_calls.resolvers.skill import *
-from apis.utils.common import database
+from apis.utils.mongo_connection import database
 
 applications_collection = database["applications"]
 skills_collection = database["skills"]
@@ -55,7 +55,7 @@ def execute_embedding_search(client, db_and_collection, user_input):
 def execute_function_call(client, prompt, functions):
     # Generating response back from gpt-3.5-turbo
     response = client.chat.completions.create(
-        model='gpt-3.5-turbo',
+        model='gpt-4o-mini',
         messages=[{'role': 'user', 'content': prompt}],
         functions=functions,
         function_call='auto'
@@ -69,7 +69,7 @@ def execute_function_call(client, prompt, functions):
 
 def execute_chat_completion(client, context, system_input, user_input):
     completion = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": context},
             {"role": "system", "content": system_input},

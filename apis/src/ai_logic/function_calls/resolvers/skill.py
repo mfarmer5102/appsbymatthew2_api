@@ -1,4 +1,4 @@
-from apis.utils.common import database
+from apis.utils.mongo_connection import database
 
 skills_collection = database["skills"]
 

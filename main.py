@@ -1,7 +1,7 @@
 ## App engine looks for main.py
 
 # Imports
-from flask import Flask
+from flask import Flask, request, after_this_request, Response
 from flask_cors import CORS
 import os
 
@@ -20,7 +20,7 @@ from apis.src.routes.applications import Applications
 from apis.src.routes.skills import Skills
 from apis.src.routes.skill_types import SkillTypes
 from apis.src.routes.support_statuses import SupportStatuses
-from apis.src.routes.traffic_reports import TrafficReports
+from apis.globals.middleware import RequestLogger
 
 # Register route files
 app.register_blueprint(Ai)
@@ -28,7 +28,6 @@ app.register_blueprint(Applications)
 app.register_blueprint(Skills)
 app.register_blueprint(SkillTypes)
 app.register_blueprint(SupportStatuses)
-app.register_blueprint(TrafficReports)
 
 
 # Root URL Route
@@ -39,4 +38,7 @@ def home():
 
 # Start server listening
 if __name__ == '__main__':
+    # Custom middleware
+    app.wsgi_app = RequestLogger(app.wsgi_app)
+    # Start server
     app.run(debug=True, host='0.0.0.0', port=port)

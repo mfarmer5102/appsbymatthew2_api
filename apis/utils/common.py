@@ -1,17 +1,7 @@
-# General imports
-from flask import Flask, Blueprint, request, jsonify, Response
+from flask import jsonify
 import os
-
-# MongoDB specific imports
-import pymongo
-from bson import json_util, ObjectId
+from bson import json_util
 import json
-import datetime
-import certifi
-
-# Variables
-my_client = pymongo.MongoClient(os.getenv('MONGO_INSTANCE_URL', "mongodb://localhost:27017"), tlsCAFile=certifi.where())
-database = my_client["apps_by_matthew"]
 
 
 # Functions

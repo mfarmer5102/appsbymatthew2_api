@@ -1,4 +1,4 @@
-from apis.utils.common import my_client as mongo_client
+from apis.utils.mongo_connection import my_client as mongo_client
 
 
 class MongoColl:
@@ -46,3 +46,4 @@ applications_coll = MongoColl(apps_by_matthew_db, 'applications')
 skills_coll = MongoColl(apps_by_matthew_db, 'skills')
 skill_types_coll = MongoColl(apps_by_matthew_db, 'skill_types')
 support_statuses_coll = MongoColl(apps_by_matthew_db, 'support_statuses')
+traffic_logs_coll = MongoColl(apps_by_matthew_db, 'traffic_logs')
